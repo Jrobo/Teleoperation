@@ -98,7 +98,7 @@ def evaluate_model(h_theta_net, f_omega_net, dataloader, criterion):
     return average_loss
 
 # available training tuples {(observation,q_dot)}#dataset loading
-data = np.load('/home/jamil/PyRep/examples/all_demos_joint_data.npy', allow_pickle=True)
+data = np.load('/home/jamil/PyRep/projects/all_demos_joint_data.npy', allow_pickle=True)
 
 # Data Split
 joystick_input = data[:, :7]  # joystick inputs
@@ -182,16 +182,16 @@ print("Training complete")
 torch.save(h_theta_net.state_dict(), 'h_theta_net.pth')
 torch.save(f_omega_net.state_dict(), 'f_omega_net.pth')
 print("Models saved.")
-# Plotting
-plt.figure(figsize=(10, 6))
-plt.plot(range(1, num_epochs + 1), train_losses, label='Train')
-plt.plot(range(1, num_epochs + 1), val_losses, label='Validation')
-#plt.plot(range(1, num_epochs + 1), [test_losses[0]] * num_epochs, label='Test')
-plt.title('Training, Validation and Test Loss')
-plt.xlabel('Epoch')
-plt.ylabel('Loss')
-plt.legend()
-plt.show()
+# # Plotting
+# plt.figure(figsize=(10, 6))
+# plt.plot(range(1, num_epochs + 1), train_losses, label='Train')
+# plt.plot(range(1, num_epochs + 1), val_losses, label='Validation')
+# #plt.plot(range(1, num_epochs + 1), [test_losses[0]] * num_epochs, label='Test')
+# plt.title('Training, Validation and Test Loss')
+# plt.xlabel('Epoch')
+# plt.ylabel('Loss')
+# plt.legend()
+# plt.show()
 
 '''import torch
 from torch import nn
