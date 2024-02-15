@@ -100,7 +100,7 @@ try:
         joystick_input = joystick_handler.x, joystick_handler.y
         print('joystick values',joystick_input)
         print('joystick values:', joystick_input)
-        print('Gripper Closed?', joystick_handler.button_down)
+        print('Gripper Closed?', joystick_handler.button_one_down)
         # print('Gripper Opened:', gripper_opened
 
         print("joint Position",type(obs.joint_positions))

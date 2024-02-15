@@ -18,9 +18,9 @@ class HThetaNetwork(nn.Module):
         self.fc3 = nn.Linear(128, 14) # O/P
 
     def forward(self, x):
-        x = F.relu(self.fc1(x))   # H1
-        x = F.relu(self.fc2(x))   # H2
-        H = self.fc3(x)           # O/P
+        z1 = F.relu(self.fc1(x))   # H1
+        y1 = F.relu(self.fc2(z1))   # H2
+        H = self.fc3(y1)           # O/P
         H = H.view(-1, 7, 2)      
         return H
 
@@ -41,6 +41,7 @@ class FOmegaNetwork(nn.Module):
         z = F.relu(self.fc2(z))       # H2
         a = self.fc3(z)               # O/P 
         a = torch.tanh(a)             # tanh 
+        print("shape of a inside the fomega class",a.shape)
         return a
 '''
 #Model to find the H matrix
@@ -75,7 +76,7 @@ def evaluate_model(h_theta_net, f_omega_net, dataloader, criterion):
     
     with torch.no_grad():  
         for batch in dataloader:
-            joystick_input, manipulator_state, true_velocities = batch
+            manipulator_state, true_velocities = batch
             # Predict the H matrix using HThetaNet
             #represents a a 2 Rd (a column vector). The matrix H 2 Rm⇥d is
             #qˆ˙ 2 Rm and the user’s low dimensional action is
@@ -101,17 +102,17 @@ def evaluate_model(h_theta_net, f_omega_net, dataloader, criterion):
 data = np.load('/home/jamil/PyRep/projects/all_demos_joint_data.npy', allow_pickle=True)
 
 # Data Split
-joystick_input = data[:, :7]  # joystick inputs
+#joystick_input = data[:, :7]  # joystick inputs
 manipulator_state = data[:, :7]  # joint states
 true_velocity = data[:, 7:]  #  true velocities
 
 #torch tensors
-joystick_input_tensor = torch.tensor(joystick_input, dtype=torch.float32)
+#joystick_input_tensor = torch.tensor(joystick_input, dtype=torch.float32)
 manipulator_state_tensor = torch.tensor(manipulator_state, dtype=torch.float32)
 joint_velocity_tensor = torch.tensor(true_velocity, dtype=torch.float32)
 
 # Tensor Dataset
-dataset = TensorDataset(joystick_input_tensor, manipulator_state_tensor, joint_velocity_tensor)
+dataset = TensorDataset(manipulator_state_tensor, joint_velocity_tensor)
 
 # training, validation, and test sets
 train_size = int(0.7 * len(dataset))
@@ -143,15 +144,16 @@ num_epochs = 100
 
 for epoch in range(num_epochs):
     for batch in train_loader:
-        joystick_input, manipulator_state, true_velocity = batch
+        manipulator_state, true_velocity = batch
 
         # Predict transformation matrix and infer joystick inputs
         predicted_H = h_theta_net(manipulator_state)
+        print("Predicted_H shape",predicted_H.shape)
         inferred_a = f_omega_net(manipulator_state, true_velocity)
-
+        print("inferred-a size", inferred_a.shape)
         # predicted velocity
         predicted_velocity = torch.bmm(predicted_H, inferred_a.unsqueeze(-1)).squeeze(-1)
-
+        print("predicted Velocity",predicted_velocity.shape)
         # Calculate loss
         loss = criterion(predicted_velocity, true_velocity)
 
@@ -178,10 +180,10 @@ print("Training complete")
 
 
 
-# save the models
-torch.save(h_theta_net.state_dict(), 'h_theta_net.pth')
-torch.save(f_omega_net.state_dict(), 'f_omega_net.pth')
-print("Models saved.")
+# # save the models
+# torch.save(h_theta_net.state_dict(), 'h_theta_net.pth')
+# torch.save(f_omega_net.state_dict(), 'f_omega_net.pth')
+# print("Models saved.")
 # # Plotting
 # plt.figure(figsize=(10, 6))
 # plt.plot(range(1, num_epochs + 1), train_losses, label='Train')
