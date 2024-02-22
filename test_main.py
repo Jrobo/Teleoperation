@@ -10,7 +10,7 @@ from modules.joystick_handler import JoystickHandler
 from modules.deep_ppca import DeepPPCA
 # from modules.mode_switching import ModeSwitching
 
-technique = 'deep_ppca'
+technique = 'scl'
 # Load models
 if technique=='scl':
     module = HThetaNetwork()

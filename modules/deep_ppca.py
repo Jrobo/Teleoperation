@@ -40,12 +40,14 @@ class DeepPPCA(nn.Module):
             idx = eigenvalues.argsort().flip([0])
             eigenvalues = eigenvalues[idx]
             eigenvalues_sign = torch.sign(eigenvalues[idx])
-            print(eigenvalues_sign)
-            eigenvectors = eigenvectors[:,idx] * eigenvalues_sign
+            print(torch.sign(eigenvectors[0, idx]), eigenvectors[:, idx])
+            eigenvectors = eigenvectors[:,idx] * torch.sign(eigenvectors[0, idx])
             return eigenvectors
 
     def get_mode_transformation(self, data, mode):
         """
+        mode switching:
+        Mode0:col 1 & 2 ; Mode1:col 3 & 4 ; Mode2:col 5 & 6 ; Mode3:col 6 & 7
         """
         eigenvectors = self.get_transformation(data)
         if mode < 3:
