@@ -4,8 +4,8 @@ import torch.optim as optim
 import numpy as np
 from torch.utils.data import TensorDataset, DataLoader, random_split
 import matplotlib.pyplot as plt
-# Model
 
+# Model
 class DeepPPCA(nn.Module):
     def __init__(self, sigma=0.01):
         super(DeepPPCA, self).__init__()
@@ -52,5 +52,7 @@ class DeepPPCA(nn.Module):
         robot_state_torch = torch.tensor(robot_state, dtype=torch.float32).unsqueeze(0)
         joystick_torch = torch.tensor(joystick, dtype=torch.float32)
         ret = (self.get_mode_transformation(robot_state_torch, mode) @ joystick_torch).squeeze()
+        print("Transformation matrix shape:", ret.shape)
+        print("Joystick vector shape:", joystick_torch.shape)
         return ret
     

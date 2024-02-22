@@ -23,6 +23,26 @@ class HThetaNetwork(nn.Module):
         H = H.view(-1, 7, 2)      
         return H
     
+    def predict_velocities(self, manipulator_state, joystick_input, mode=0):
+        # Joint positions
+        manipulator_state_tensor = torch.tensor(manipulator_state, dtype=torch.float32)
+        print("Calling this function")
+        # Transformation matrix "H"
+        predicted_H = self(manipulator_state_tensor)
+        print("the predicted_H is", predicted_H)
+        print("Shape of predicted_H:", predicted_H.shape)
+
+        # Predicted velocities
+        # Transpose or reshape joystick_input to have dimensions (2x1)
+        joystick_input = torch.tensor(joystick_input, dtype=torch.float32).reshape(-1, 1)
+        print(" joystick input",joystick_input)
+        print("Joystick input shape",joystick_input.shape)
+        predicted_velocities = torch.matmul(predicted_H, joystick_input)
+        predicted_velocities = predicted_velocities.squeeze()
+        print("the predicted velocity is", predicted_velocities)
+        print("predicted_velocities.shape", predicted_velocities.shape)
+        return predicted_velocities
+    
 # Model 2 ----->to find the a matrix
 class FOmegaNetwork(nn.Module):
     def __init__(self):
@@ -43,6 +63,8 @@ class FOmegaNetwork(nn.Module):
         print("shape of a inside the fomega class",a.shape)
         return a
     
+
+
 def predict_velocities(self, manipulator_state, joystick_input, mode=0):
     # Joint positions
     manipulator_state_tensor = torch.tensor(manipulator_state, dtype=torch.float32)
@@ -98,7 +120,7 @@ def evaluate_model(h_theta_net, f_omega_net, dataloader, criterion):
     f_omega_net.eval()  #also same 
     total_loss = 0.0
     num_batches = 0
-    
+    val_losses=[]
     with torch.no_grad():  
         for batch in dataloader:
             manipulator_state, true_velocities = batch
@@ -114,10 +136,11 @@ def evaluate_model(h_theta_net, f_omega_net, dataloader, criterion):
             loss = criterion(predicted_velocity, true_velocities)
             total_loss += loss.item()  # .item() to get the value as a Python float
             num_batches += 1
-            
-    # the average loss 
+         
+    # average loss 
     average_loss = total_loss / num_batches
     return average_loss
+
 
 
 
