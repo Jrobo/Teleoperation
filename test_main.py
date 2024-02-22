@@ -10,7 +10,7 @@ from modules.joystick_handler import JoystickHandler
 from modules.deep_ppca import DeepPPCA
 # from modules.mode_switching import ModeSwitching
 
-technique = 'scl'
+technique = 'deep_ppca'
 # Load models
 if technique=='scl':
     module = HThetaNetwork()
@@ -38,31 +38,17 @@ joystick_handler = JoystickHandler()
 try:
     while True:
         # Joystick input
-        """   x_axis, y_axis, button_pressed = joystick_handler.listen()
-        print(f"X-Axis: {x_axis}, Y-Axis: {y_axis}, Button Pressed: {button_pressed}")
-        axis_values=[x_axis, y_axis] """
-        # x_axis, y_axis, button_pressed = joystick_handler.listen()
-        # print(f"X-Axis: {x_axis}, Y-Axis: {y_axis}, Button Pressed: {button_pressed}")
-        # # joystick input
-        #predicted_velocities=torch.empty(size=(0,))
         joystick_handler.listen()
         axis_values=[joystick_handler.x, joystick_handler.y]
+        mode=joystick_handler.mode
         if axis_values is not None:
             # Use SCL module to predict velocities  
-            predicted_velocities = module.predict_velocities(obs.joint_positions, axis_values, mode=0) 
+            predicted_velocities = module.predict_velocities(obs.joint_positions, axis_values, mode) 
             # button press--->OPEN/CLOSE
-            print("current_mode",joystick_handler.mode)
+            print("Current Mode: ",joystick_handler.mode)
         if joystick_handler.button_one_down:
-            if joystick_handler.mode == 0:
-                print("Mode 0: Closing gripper")
-                env._scene.robot.gripper.actuate(0.0, velocity=0.2)
-            # elif joystick_handler.mode in [1, 2, 3]:
-            #         print(f"Mode {joystick_handler.mode}: transformation")
-                    # use the velocity transformation by changing the mode
-                    # predicted_velocities = module.predict_velocities(obs.joint_positions, axis_values, mode=joystick_handler.mode)
-                    # print("Predicted Velocities:", predicted_velocities)                     
-                    #transformation = module.get_mode_transformation(data, mode=joystick_handler.mode)
-                    #print("transformation",transformation)                   
+            print("Closing gripper")
+            env._scene.robot.gripper.actuate(0.0, velocity=0.2)          
         else:
             print("Opening gripper")
             env._scene.robot.gripper.actuate(1.0, velocity=0.2) 
@@ -71,28 +57,3 @@ try:
         obs, reward, _ = task.step(predicted_velocities.cpu().detach().numpy())
 except KeyboardInterrupt:
     env.shutdown()
-# try:
-#     while True:
-#         # Joystick input
-#         """   x_axis, y_axis, button_pressed = joystick_handler.listen()
-#         print(f"X-Axis: {x_axis}, Y-Axis: {y_axis}, Button Pressed: {button_pressed}")
-#         axis_values=[x_axis, y_axis] """
-#         x_axis, y_axis, button_pressed = joystick_handler.listen()
-#         print(f"X-Axis: {x_axis}, Y-Axis: {y_axis}, Button Pressed: {button_pressed}")
-#         # joystick input
-#         axis_values=[x_axis, y_axis]
-#         if axis_values is not None:
-#             # Use SCL module to predict velocities  
-#             predicted_velocities = scl_module.predict_velocities(obs.joint_positions, axis_values)
-#             print("Predicted Velocities:", predicted_velocities)   
-#             # button press--->OPEN/CLOSE
-#             if button_pressed:
-#                 print("Closing gripper")
-#                 env._scene.robot.gripper.actuate(0.0, velocity=0.2)  # Adjust the velocity as needed
-#             else:
-#                 print("Opening gripper")
-#                 env._scene.robot.gripper.actuate(1.0, velocity=0.2)  # Adjust the velocity as needed         
-#             # Step in the environment   
-#             obs, reward, terminate = task.step(predicted_velocities.cpu().detach().numpy())
-# except KeyboardInterrupt:
-#     env.shutdown()

@@ -17,6 +17,7 @@ class JoystickHandler:
     def listen(self):# -> Tuple[float, float, bool, int]:
 
         for event in pygame.event.get():
+            mode = self.mode
             if event.type == pygame.JOYAXISMOTION:
                 self.x = self.joystick.get_axis(0)
                 self.y = self.joystick.get_axis(1)
@@ -26,12 +27,12 @@ class JoystickHandler:
                     self.button_one_down = True
                 # Check if the button pressed is within the specified range
                 if event.button == 2:
-                    self.mode -= 1
+                    mode -= 1
                 if event.button == 3:
-                    self.mode += 1
+                    mode += 1
 
-                self.mode = self.mode if self.mode >= 0 else 0
-                self.mode = self.mode if self.mode < 4 else 3
+                mode = mode if mode >= 0 else 0
+                self.mode = mode if mode <= 3 else 3
 
             elif event.type == pygame.JOYBUTTONUP:
                 if event.button == 0:

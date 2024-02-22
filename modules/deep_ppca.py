@@ -31,28 +31,33 @@ class DeepPPCA(nn.Module):
 
 
     def get_transformation(self, data):
-        """
-        Data is a 7-dimensional column vector
-        """
-        H = self(data)
-        covariance_matrix = H @ H.transpose(1,2) + self.sigma**2 * torch.eye(data.size(1))
-        eigenvalues, eigenvectors = torch.linalg.eigh(covariance_matrix.squeeze())
-        idx = eigenvalues.argsort().flip([0])
-        eigenvalues = eigenvalues[idx]
-        eigenvectors = eigenvectors[:,idx]
-        return eigenvectors
+            """
+            Data is a 7-dimensional column vector
+            """
+            H = self(data)
+            covariance_matrix = H @ H.transpose(1,2) + self.sigma**2 * torch.eye(data.size(1))
+            eigenvalues, eigenvectors = torch.linalg.eigh(covariance_matrix.squeeze())
+            idx = eigenvalues.argsort().flip([0])
+            eigenvalues = eigenvalues[idx]
+            eigenvalues_sign = torch.sign(eigenvalues[idx])
+            print(eigenvalues_sign)
+            eigenvectors = eigenvectors[:,idx] * eigenvalues_sign
+            return eigenvectors
 
-    def get_mode_transformation(self, data, mode=0):
+    def get_mode_transformation(self, data, mode):
         """
         """
         eigenvectors = self.get_transformation(data)
-        return eigenvectors[:, mode*2:mode*2+2]
+        if mode < 3:
+            return eigenvectors[:, mode*2:mode*2+2]
+        else:
+            return eigenvectors[:, -2:]
 
     def predict_velocities(self, robot_state, joystick, mode=0):
-        robot_state_torch = torch.tensor(robot_state, dtype=torch.float32).unsqueeze(0)
-        joystick_torch = torch.tensor(joystick, dtype=torch.float32)
-        ret = (self.get_mode_transformation(robot_state_torch, mode) @ joystick_torch).squeeze()
-        print("Transformation matrix shape:", ret.shape)
-        print("Joystick vector shape:", joystick_torch.shape)
-        return ret
-    
+            robot_state_torch = torch.tensor(robot_state, dtype=torch.float32).unsqueeze(0)
+            joystick_torch = torch.tensor(joystick, dtype=torch.float32)
+            H_pred=self.get_mode_transformation(robot_state_torch, mode)
+            print("H prediction before multiplying joystick values",H_pred)
+            ret = (H_pred @ joystick_torch).squeeze()           
+            return ret
+        
