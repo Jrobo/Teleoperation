@@ -6,11 +6,13 @@ from rlbench.environment import Environment
 from rlbench.tasks import WaterPlants
 from modules.scl import HThetaNetwork
 from modules.joystick_handler import JoystickHandler
-#from modules.scl_module import SCLModule  # SCL module
 from modules.deep_ppca import DeepPPCA
-# from modules.mode_switching import ModeSwitching
+import numpy as np
+import matplotlib
+#matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
-technique = 'scl'
+technique = 'deep_ppca'
 # Load models
 if technique=='scl':
     module = HThetaNetwork()
@@ -35,24 +37,44 @@ task = env.get_task(WaterPlants)
 descriptions, obs = task.reset()
 joystick_handler = JoystickHandler()
 
+robot_state_data = []
+# predicted_velocities_data = []
+predicted_velocity_data = torch.Tensor()
+
+module.start_animation()
 try:
     while True:
         # Joystick input
         joystick_handler.listen()
         axis_values=[joystick_handler.x, joystick_handler.y]
+        #axis_values=[1,0]
         mode=joystick_handler.mode
-        if axis_values is not None:
-            # Use SCL module to predict velocities  
-            predicted_velocities = module.predict_velocities(obs.joint_positions, axis_values, mode) 
-            # button press--->OPEN/CLOSE
-            print("Current Mode: ",joystick_handler.mode)
-        if joystick_handler.button_one_down:
-            print("Closing gripper")
-            env._scene.robot.gripper.actuate(0.0, velocity=0.2)          
-        else:
-            print("Opening gripper")
-            env._scene.robot.gripper.actuate(1.0, velocity=0.2) 
+        #print("Datatype of obs.joint state",type(obs.joint_positions))
 
+         #if axis_values is not None:
+        # Use SCL module to predict velocities  
+            # Append new data to lists
+        
+        #print("robot  state data",robot_state_data.shape)
+        print(axis_values)
+        predicted_velocities = module.predict_velocities(obs.joint_positions, axis_values, mode) 
+        #module.update_animation()
+        #robot_state_data.append(robot_state.tolist())  
+        #velocities_data = predicted_velocities.detach().numpy().tolist()
+        
+
+        #if technique == 'deep_ppca':
+        #module.run_animation(obs.joint_positions)                  
+        #plt.show()
+            # Convert numpy array to list before appending          
+        #print(predicted_velocity_data)            # gripper->OPEN/CLOSE
+        if joystick_handler.button_one_down: 
+            env._scene.robot.gripper.actuate(0.0, velocity=0.2) 
+        else:
+            env._scene.robot.gripper.actuate(1.0, velocity=0.2)    
+
+        
+        
         # Step in the environment   
         obs, reward, _ = task.step(predicted_velocities.cpu().detach().numpy())
 except KeyboardInterrupt:

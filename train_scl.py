@@ -9,9 +9,6 @@ import torch.nn.functional as F
 from modules.data_load_module import load_data, create_data_loaders
 from modules.scl import HThetaNetwork,FOmegaNetwork,train_model, evaluate_model
 
-
-
-
 # Load data
 train_dataset, val_dataset, test_dataset = load_data('/home/jamil/PyRep/projects/dataset/all_demos_joint_data.npy')
 

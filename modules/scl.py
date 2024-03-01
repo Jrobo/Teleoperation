@@ -26,21 +26,14 @@ class HThetaNetwork(nn.Module):
     def predict_velocities(self, manipulator_state, joystick_input, mode=0):
         # Joint positions
         manipulator_state_tensor = torch.tensor(manipulator_state, dtype=torch.float32)
-        print("Calling this function")
         # Transformation matrix "H"
         predicted_H = self(manipulator_state_tensor)
-        print("the predicted_H is", predicted_H)
-        print("Shape of predicted_H:", predicted_H.shape)
 
         # Predicted velocities
         # Transpose or reshape joystick_input to have dimensions (2x1)
         joystick_input = torch.tensor(joystick_input, dtype=torch.float32).reshape(-1, 1)
-        print(" joystick input",joystick_input)
-        print("Joystick input shape",joystick_input.shape)
         predicted_velocities = torch.matmul(predicted_H, joystick_input)
         predicted_velocities = predicted_velocities.squeeze()
-        print("the predicted velocity is", predicted_velocities)
-        print("predicted_velocities.shape", predicted_velocities.shape)
         return predicted_velocities
     
 # Model 2 ----->to find the a matrix
@@ -60,7 +53,6 @@ class FOmegaNetwork(nn.Module):
         z = F.relu(self.fc2(z))       # H2
         a = self.fc3(z)               # O/P 
         a = torch.tanh(a)             # tanh 
-        print("shape of a inside the fomega class",a.shape)
         return a
     
 

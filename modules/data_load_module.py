@@ -10,7 +10,7 @@ def load_data(path, train_ratio=0.7, val_ratio=0.15):
     joint_velocity_tensor = torch.tensor(true_velocity, dtype=torch.float32)
     dataset = TensorDataset(manipulator_state_tensor, joint_velocity_tensor)
     total_size = len(dataset)
-    print("Sizeof_Dataset_", total_size)
+    #print("Sizeof_Dataset_", total_size)
     train_size = int(train_ratio * total_size)
     val_size = int(val_ratio * total_size)
     test_size = total_size - train_size - val_size
