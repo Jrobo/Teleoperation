@@ -11,7 +11,7 @@ from matplotlib import animation
 
 # Model
 class DeepPPCA(nn.Module):
-    def __init__(self, sigma=0.001):
+    def __init__(self, sigma):
         super(DeepPPCA, self).__init__()
         self.cov_matrix = None
         #self.dataset = {'ret': [], 'robot_state_torch': []}
@@ -23,29 +23,55 @@ class DeepPPCA(nn.Module):
         self.robot_state_torch = torch.tensor(np.zeros(7))
 
     def forward(self, x):
-        x = torch.tanh(self.fc1(x))
-        x = torch.tanh(self.fc2(x))
+        x = torch.relu(self.fc1(x))
+        x = torch.relu(self.fc2(x))#change to l linear
         H = self.fc3(x)
         H = H.view(-1, 7, 7)
         #print("size of H",H.shape)
         return H
     
+    # def log_likelihood(self, data):
+    #     H = self(data)
+    #     covariance_matrix = H @ H.transpose(1, 2) + self.sigma**2 * torch.eye(data.size(1))
+    #     print(covariance_matrix)
+    #     #epsilon = 1e-4
+    #     #covariance_matrix = covariance_matrix + epsilon * torch.eye(covariance_matrix.size(-1))
+    #     mvn = torch.distributions.MultivariateNormal(torch.zeros(data.size(1)), covariance_matrix)
+    #     log_prob = mvn.log_prob(data)
+    #     #print("shape of log [prob]",log_prob.shape())
+    #     det_cov = torch.det(covariance_matrix)
+    #     return log_prob, det_cov
+    
     def log_likelihood(self, data):
         H = self(data)
         covariance_matrix = H @ H.transpose(1, 2) + self.sigma**2 * torch.eye(data.size(1))
-        mvn = torch.distributions.MultivariateNormal(torch.zeros(data.size(1)), covariance_matrix)
-        log_prob = mvn.log_prob(data)
-        #print("shape of log [prob]",log_prob.shape())
-        det_cov = torch.det(covariance_matrix)
+        try:
+            mvn = torch.distributions.MultivariateNormal(torch.zeros(data.size(1)), covariance_matrix)
+            log_prob = mvn.log_prob(data)
+            det_cov = torch.det(covariance_matrix)
+        except torch.linalg.LinAlgError:
+            print("Covariance matrix is not positive definite.")
+            print(covariance_matrix)
+            np.save('covariance_matrix_not_positive_definite.npy', covariance_matrix.detach().cpu().numpy())
+            # Returning default values to prevent runtime error
+            return torch.tensor(0.0), torch.tensor(0.0)
+
         return log_prob, det_cov
-        
-        
+
+            
     def get_transformation(self, data):
             """
             Data is a 7-dimensional column vector
             """
             H = self(data)
             covariance_matrix = H @ H.transpose(1,2) #+ self.sigma**2 * torch.eye(data.size(1))
+            try:
+                chol_cov_matrix = torch.cholesky(covariance_matrix)
+            except torch.linalg.LinAlgError:
+                # Handle the case 
+                print("Covariance matrix is not positive definite.")
+                print(covariance_matrix)
+                        
             eigenvalues, eigenvectors = torch.linalg.eigh(covariance_matrix.squeeze())
             idx = eigenvalues.argsort().flip([0])
             #print(eigenvalues)
@@ -54,11 +80,6 @@ class DeepPPCA(nn.Module):
             #print(torch.sign(eigenvectors[0, idx]), eigenvectors[:, idx])
             eigenvectors = eigenvectors[:,idx] * torch.sign(eigenvectors[0, idx])
             #print(eigenvectors)
-            """ # Plot heatmap
-            plt.imshow(covariance_matrix.squeeze().numpy(), cmap='viridis')
-            plt.title('Covariance Matrix Heatmap')
-            plt.colorbar()
-            plt.show()"""
             return covariance_matrix, eigenvectors
 
     def get_mode_transformation(self, data, mode):
@@ -80,69 +101,56 @@ class DeepPPCA(nn.Module):
             ret = (H_pred @ joystick_torch).squeeze()  
             return ret
         
-    
-    def create_and_save_heatmap_animation(self, cov_matrix, eigenvectors, mode_values):
-        # figure 
-        fig = plt.figure()
+    # def create_and_save_heatmap_animation(self, cov_matrix, eigenvectors, mode_values):
+    # # Create figure
+    #     fig, axs = plt.subplots(1, 2)
 
-        # initialization
-        def init():
-            # initial heatmap 7x7 
-            sns.heatmap(torch.zeros((7, 7)).numpy(), vmax=0.8, square=True, cbar=False)
+    #     # Initialization
+    #     def init():
+    #         # Initial heatmap 7x7 
+    #         sns.heatmap(torch.zeros((7, 7)).numpy(), vmax=0.8, square=True, cbar=False, ax=axs[0])
 
-        # animation
-        def animate(i, *args):
-            # arguments
-            cov_matrix, eigenvectors, mode_values = args
+        # # Animation
+        # def animate(frame, *args):
+        #     # Arguments
+        #     cov_matrix, eigenvectors, mode_values = args[0]
 
-           
-            plt.subplot(1, 2, 1)
-             # covariance matrix heatmap
-            data_cov = cov_matrix.detach().squeeze().numpy()
-            sns.heatmap(data_cov, vmax=0.8, square=True, cbar=False, cmap='viridis')
-            plt.title('Covariance Matrix Heatmap')  # Title for the subplot
+        #     # Clear previous plots
+        #     axs[0].cla()
+        #     axs[1].cla()
 
-            
-            plt.subplot(1, 2, 2)
-            mode = mode_values[0]
-            columns_to_plot = [mode * 2, mode * 2 + 1]
-            data_eig = eigenvectors[:, columns_to_plot].detach().numpy()
+        #     # Covariance matrix heatmap
+        #     data_cov = cov_matrix.detach().squeeze().numpy()
+        #     sns.heatmap(data_cov, vmax=0.8, square=True, cbar=False, cmap='viridis', ax=axs[0])
+        #     axs[0].set_title('Covariance Matrix Heatmap')
 
-            #eigenvectors heatmap
-            sns.heatmap(data_eig, vmax=0.8, square=True, cbar=False, cmap='viridis')
-            plt.title(f'Eigenvector Columns: {columns_to_plot[0]} and {columns_to_plot[1]}')
+        #     # Eigenvectors heatmap
+        #     mode = mode_values[0]
+        #     columns_to_plot = [mode * 2, mode * 2 + 1]
+        #     data_eig = eigenvectors[:, columns_to_plot].detach().numpy()
+        #     sns.heatmap(data_eig, vmax=0.8, square=True, cbar=False, cmap='viridis', ax=axs[1])
+        #     axs[1].set_title(f'Eigenvector Columns: {columns_to_plot[0]} and {columns_to_plot[1]}')
 
-        # animation 
-        anim = animation.FuncAnimation(fig, animate, fargs=(cov_matrix, eigenvectors, mode_values),
-                                    init_func=init, frames=20, interval=50, repeat=False)
+        # # Animation 
+        # anim = animation.FuncAnimation(fig, animate, fargs=([(cov_matrix, eigenvectors, mode_values)]),
+        #                             init_func=init, frames=None, interval=50, repeat=False)
 
-        # save
-        savefile = r"test3.gif"
-        
-        
-        pillowwriter = animation.PillowWriter(fps=20)
-        
-        # save GIF
-        anim.save(savefile, writer=pillowwriter)
+       
+        # # Save the animation as a movie file
+        # savefile = r"test3.mp4"
+        # pillowwriter = animation.FFMpegWriter(fps=20)
+        # anim.save(savefile, writer=pillowwriter)
+        # plt.show()
 
-        
-        plt.show()
-
-        
-        return fig
-
-
-    def update_plot(self):
-            cov_matrix, _ = self.get_transformation(self.robot_state_torch)
-            plt.clf()
-            plt.imshow(cov_matrix.squeeze().detach().numpy(), cmap='viridis', interpolation='nearest')
-            plt.draw()
-            plt.pause(0.001)          
+    # def update_plot(self):
+    #         cov_matrix, _ = self.get_transformation(self.robot_state_torch)
+    #         plt.clf()
+    #         plt.imshow(cov_matrix.squeeze().detach().numpy(), cmap='viridis', interpolation='nearest')
+    #         plt.draw()
+    #         plt.pause(0.001)          
      
-    def start_animation(self):
-        plt.ion()
-
-
+    # def start_animation(self):
+    #     plt.ion()
 
     # def create_and_save_heatmap_animation(self, cov_matrix):
     #     fig = plt.figure()

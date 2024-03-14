@@ -27,7 +27,6 @@ def train_model(model, train_loader, val_loader, optimizer, num_epochs):
     val_losses = []
     for epoch in range(num_epochs):
         total_loss = 0.0  # Initialize total_loss before the loop
-
         # Training
         model.train()  # Set the model to training mode
         for inputs, _ in train_loader:
@@ -65,7 +64,7 @@ train_loader, val_loader, test_loader = create_data_loaders(train_dataset, val_d
 
 # Initialize
 #sigma = 1
-sigma = 0.0001
+sigma = 0.01
 h_theta_model = DeepPPCA(sigma)
 train_losses = []
 test_losses = []
@@ -85,14 +84,38 @@ print("val losses",len(val_losses))
 print("length of train loader",len(train_loader)) 
 print("length of train loader",len(val_loader))
 print("length of test loader",len(test_loader))
+
+
 # Plot
 plt.plot(train_losses, label='Train')
 plt.plot(val_losses, label='Val')
 plt.xlabel('Epoch')
 plt.ylabel('Log-Likelihood')
+plt.yscale('symlog')  # Set y-axis scale to symlog
 plt.legend()
 
 # Include parameters in the plot title
 plt.title(f"Sigma: {sigma}, Epochs: {num_epochs}")
-plt.savefig(f'./Images_Plots/sig_{sigma}_eph_{num_epochs}_lr_{lr}.png')
+plt.savefig(f'./Images_Plots/symlog_sig_{sigma}_eph_{num_epochs}_lr_{lr}.png')
 plt.show()
+# # Plot
+# plt.plot(train_losses, label='Train')
+# plt.plot(val_losses, label='Val')
+# plt.xlabel('Epoch')
+# plt.ylabel('Log-Likelihood')
+# plt.legend()
+# plt.show()
+
+# # Plot
+# plt.plot(train_losses, label='Train')
+# plt.plot(val_losses, label='Val')
+# plt.xlabel('Epoch')
+# plt.ylabel('Log-Likelihood')
+# plt.legend()
+
+# # Include parameters in the plot title
+# plt.title(f"Sigma: {sigma}, Epochs: {num_epochs}")
+# plt.savefig(f'./Images_Plots/sig_{sigma}_eph_{num_epochs}_lr_{lr}.png')
+# plt.show()
+
+

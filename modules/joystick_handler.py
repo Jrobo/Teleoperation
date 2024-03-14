@@ -31,6 +31,7 @@ class JoystickHandler:
                 if event.button == 3:
                     mode += 1
 
+                #self.mode = mode % 4
                 mode = mode if mode >= 0 else 0
                 self.mode = mode if mode <= 3 else 3
 
