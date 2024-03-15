@@ -11,7 +11,7 @@ from datetime import datetime
 import os
 import torch.optim as optim
 
-# Set the random seed for reproducibility
+# Set the random seed 
 def set_random_seed(seed):
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -35,7 +35,7 @@ def train_model(model, train_loader, val_loader, optimizer, num_epochs):
     train_losses = []
     val_losses = []
     for epoch in range(num_epochs):
-        total_loss = 0.0  # Initialize total_loss before the loop
+        total_loss = 0.0  # Initialize total_loss 
         # Training
         model.train()  # training mode
         for inputs, _ in train_loader:
@@ -96,12 +96,22 @@ def main(sigma, lr, num_epochs, seed):
     current_time = now.strftime("%Y-%m-%d_%H-%M")
     image_name = f'symlog_sig_{sigma}_eph_{num_epochs}_lr_{lr}_{current_time}.png'
     image_path = os.path.join('./Images_Plots', image_name)
-    with open('results/training_results.csv', mode='a', newline='') as file:
-        writer = csv.writer(file)
-        if file.tell() == 0:  # Check if the file is empty
-            writer.writerow(['Index', 'Date Time', 'Sigma', 'Learning Rate', 'Epochs', 'Seed', 'Training Time', 'Train Losses', 'Val Losses', 'Training Set Size', 'Image Path'])
-        writer.writerow([file.tell() // 70, current_time, sigma, lr, num_epochs, seed, training_time, train_losses, val_losses, train_set_size, image_path])
+    csv_file = 'results/training_results.csv'
 
+    # Determine the row index
+    row_index = 1  # Default to 0 if file is empty
+    if os.path.isfile(csv_file):
+        with open(csv_file, mode='r') as file:
+            # Check if the file is empty
+            if os.stat(csv_file).st_size > 0:
+                row_index = sum(1 for line in file)
+
+    # Write data to CSV file
+    with open(csv_file, mode='a', newline='') as file:
+        writer = csv.writer(file)
+        if row_index == 1:  # Check if the file is empty
+            writer.writerow(['Index', 'Date Time', 'Sigma', 'Learning Rate', 'Epochs', 'Seed', 'Training Time', 'Training Set Size', 'Image Path'])
+        writer.writerow([row_index, current_time, sigma, lr, num_epochs, seed, round(training_time, 5), train_set_size, image_path])
     # Save 
     torch.save(h_theta_model.state_dict(), f'./saved_models/ppca_model.pth')
     print("Model saved.")
@@ -126,9 +136,9 @@ def main(sigma, lr, num_epochs, seed):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Train a DeepPPCA model')
-    parser.add_argument('--sigma', type=float, default=0.01, help='Value of sigma.')
+    parser.add_argument('--sigma', type=float, default=0.001, help='Value of sigma.')
     parser.add_argument('--lr', type=float, default=0.0001, help='Learning rate.')
-    parser.add_argument('--num_epochs', type=int, default=10, help='Number of epochs for training.')
+    parser.add_argument('--num_epochs', type=int, default=5, help='Number of epochs for training.')
     parser.add_argument('--seed', type=int, default=42, help='Random seed for reproducibility.')
 
     args = parser.parse_args()
