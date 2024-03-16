@@ -96,10 +96,20 @@ def main(sigma, lr, num_epochs, seed):
     current_time = now.strftime("%Y-%m-%d_%H-%M")
     image_name = f'symlog_sig_{sigma}_eph_{num_epochs}_lr_{lr}_{current_time}.png'
     image_path = os.path.join('./Images_Plots', image_name)
+
+    # file extension with ".npy"
+    npy_path = os.path.splitext(image_path)[0] + '.npy'
+
+    # data
+    loss_val_data = np.array([train_losses, val_losses])
+
+    # Save the data as an npy file
+    np.save(npy_path, loss_val_data)
+    
     csv_file = 'results/training_results.csv'
 
     # Determine the row index
-    row_index = 1  # Default to 0 if file is empty
+    row_index = 1  # Default to 1 if file is empty
     if os.path.isfile(csv_file):
         with open(csv_file, mode='r') as file:
             # Check if the file is empty
@@ -110,8 +120,9 @@ def main(sigma, lr, num_epochs, seed):
     with open(csv_file, mode='a', newline='') as file:
         writer = csv.writer(file)
         if row_index == 1:  # Check if the file is empty
-            writer.writerow(['Index', 'Date Time', 'Sigma', 'Learning Rate', 'Epochs', 'Seed', 'Training Time', 'Training Set Size', 'Image Path'])
-        writer.writerow([row_index, current_time, sigma, lr, num_epochs, seed, round(training_time, 5), train_set_size, image_path])
+            writer.writerow(['Index', 'Date Time', 'Sigma', 'Learning Rate', 'Epochs', 'Seed', 'Training Time', 'Training Set Size', 'Image Path','Numpy Path'])
+        writer.writerow([row_index, current_time, sigma, lr, num_epochs, seed, round(training_time, 5), train_set_size, image_path,npy_path])
+
     # Save 
     torch.save(h_theta_model.state_dict(), f'./saved_models/ppca_model.pth')
     print("Model saved.")
@@ -136,9 +147,9 @@ def main(sigma, lr, num_epochs, seed):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Train a DeepPPCA model')
-    parser.add_argument('--sigma', type=float, default=0.001, help='Value of sigma.')
+    parser.add_argument('--sigma', type=float, default=0.01, help='Value of sigma.')
     parser.add_argument('--lr', type=float, default=0.0001, help='Learning rate.')
-    parser.add_argument('--num_epochs', type=int, default=5, help='Number of epochs for training.')
+    parser.add_argument('--num_epochs', type=int, default=7, help='Number of epochs for training.')
     parser.add_argument('--seed', type=int, default=42, help='Random seed for reproducibility.')
 
     args = parser.parse_args()
