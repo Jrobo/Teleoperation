@@ -24,7 +24,7 @@ def evaluate_model(model, dataloader):
     with torch.no_grad():
         for inputs, _ in dataloader:
             log_prob, det_cov = model.log_likelihood(inputs)
-            nll = -log_prob.mean() + 0.5 * torch.log(det_cov).mean()
+            nll = -log_prob.mean() #+ 0.5 * torch.log(det_cov).mean()
             total_nll += nll.item() * inputs.size(0)  # Sum up 
             total_samples += inputs.size(0)  
 
@@ -42,7 +42,7 @@ def train_model(model, train_loader, val_loader, optimizer, num_epochs):
             optimizer.zero_grad()
 
             log_prob, det_cov = model.log_likelihood(inputs)
-            nll = -log_prob.mean() + 0.5 * torch.log(det_cov).mean()
+            nll = -log_prob.mean() # + 0.5 * torch.log(det_cov).mean()
 
             nll.backward()
             optimizer.step()
@@ -88,10 +88,10 @@ def main(sigma, lr, num_epochs, seed):
     optimizer = optim.Adam(h_theta_model.parameters(), lr)
     start_time = time.time()  # Record the start time
     train_losses, val_losses = train_model(h_theta_model, train_loader, val_loader, optimizer, num_epochs)
-    end_time = time.time()  # Record the end time
+    end_time = time.time()  # Record end time
     training_time = end_time - start_time
 
-    # Save the results to a CSV file
+    # Save the results to CSV file
     now = datetime.now()
     current_time = now.strftime("%Y-%m-%d_%H-%M")
     image_name = f'symlog_sig_{sigma}_eph_{num_epochs}_lr_{lr}_{current_time}.png'
@@ -104,9 +104,9 @@ def main(sigma, lr, num_epochs, seed):
     loss_val_data = np.array([train_losses, val_losses])
 
     # Save the data as an npy file
-    np.save(npy_path, loss_val_data)
-    
-    csv_file = 'results/training_results.csv'
+    np.save(f'results/loss_sigma_{sigma}_epochs_{num_epochs}_lr_{lr}.npy', np.array([train_losses, val_losses]))
+    # Define the filename
+    csv_file = 'results/ttraining_results.csv'
 
     # Determine the row index
     row_index = 1  # Default to 1 if file is empty
@@ -147,10 +147,10 @@ def main(sigma, lr, num_epochs, seed):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Train a DeepPPCA model')
-    parser.add_argument('--sigma', type=float, default=0.01, help='Value of sigma.')
+    parser.add_argument('--sigma', type=float, default=0.00001, help='Value of sigma.')
     parser.add_argument('--lr', type=float, default=0.0001, help='Learning rate.')
-    parser.add_argument('--num_epochs', type=int, default=7, help='Number of epochs for training.')
-    parser.add_argument('--seed', type=int, default=42, help='Random seed for reproducibility.')
+    parser.add_argument('--num_epochs', type=int, default=100, help='Number of epochs for training.')
+    parser.add_argument('--seed', type=int, default=123, help='Random seed for reproducibility.')
 
     args = parser.parse_args()
 

@@ -1,0 +1,12 @@
+Index,Date Time,Sigma,Learning Rate,Epochs,Seed,Training Time,Training Set Size,Image Path,Numpy Path
+1,2024-03-17_00-11,0.01,0.0001,20000,42,20309.64088,1743,./Images_Plots/symlog_sig_0.01_eph_20000_lr_0.0001_2024-03-17_00-11.png,./Images_Plots/symlog_sig_0.01_eph_20000_lr_0.0001_2024-03-17_00-11.npy
+2,2024-03-17_09-00,0.001,0.0001,20000,42,20568.73231,1743,./Images_Plots/symlog_sig_0.001_eph_20000_lr_0.0001_2024-03-17_09-00.png,./Images_Plots/symlog_sig_0.001_eph_20000_lr_0.0001_2024-03-17_09-00.npy
+3,2024-03-17_18-30,0.001,0.0001,10000,42,11144.01311,1743,./Images_Plots/symlog_sig_0.001_eph_10000_lr_0.0001_2024-03-17_18-30.png,./Images_Plots/symlog_sig_0.001_eph_10000_lr_0.0001_2024-03-17_18-30.npy
+4,2024-03-17_21-32,0.01,0.0001,10000,42,10264.13099,1743,./Images_Plots/symlog_sig_0.01_eph_10000_lr_0.0001_2024-03-17_21-32.png,./Images_Plots/symlog_sig_0.01_eph_10000_lr_0.0001_2024-03-17_21-32.npy
+5,2024-03-18_00-06,0.001,0.0001,8000,42,8342.45969,1743,./Images_Plots/symlog_sig_0.001_eph_8000_lr_0.0001_2024-03-18_00-06.png,./Images_Plots/symlog_sig_0.001_eph_8000_lr_0.0001_2024-03-18_00-06.npy
+6,2024-03-18_06-12,0.001,0.0001,20000,123,21263.72683,1743,./Images_Plots/symlog_sig_0.001_eph_20000_lr_0.0001_2024-03-18_06-12.png,./Images_Plots/symlog_sig_0.001_eph_20000_lr_0.0001_2024-03-18_06-12.npy
+7,2024-03-18_14-35,0.01,0.0001,5000,123,4986.60517,1743,./Images_Plots/symlog_sig_0.01_eph_5000_lr_0.0001_2024-03-18_14-35.png,./Images_Plots/symlog_sig_0.01_eph_5000_lr_0.0001_2024-03-18_14-35.npy
+8,2024-03-18_16-09,0.001,0.0001,3000,123,2972.02205,1743,./Images_Plots/symlog_sig_0.001_eph_3000_lr_0.0001_2024-03-18_16-09.png,./Images_Plots/symlog_sig_0.001_eph_3000_lr_0.0001_2024-03-18_16-09.npy
+9,2024-03-21_12-51,0.01,0.0001,3000,123,3089.64435,1743,./Images_Plots/symlog_sig_0.01_eph_3000_lr_0.0001_2024-03-21_12-51.png,./Images_Plots/symlog_sig_0.01_eph_3000_lr_0.0001_2024-03-21_12-51.npy
+10,2024-03-21_14-21,0.01,0.0001,1000,123,962.6472,1743,./Images_Plots/symlog_sig_0.01_eph_1000_lr_0.0001_2024-03-21_14-21.png,./Images_Plots/symlog_sig_0.01_eph_1000_lr_0.0001_2024-03-21_14-21.npy
+11,2024-03-21_15-11,0.0001,0.0001,30,123,30.15764,1743,./Images_Plots/symlog_sig_0.0001_eph_30_lr_0.0001_2024-03-21_15-11.png,./Images_Plots/symlog_sig_0.0001_eph_30_lr_0.0001_2024-03-21_15-11.npy

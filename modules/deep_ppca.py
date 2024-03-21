@@ -44,15 +44,21 @@ class DeepPPCA(nn.Module):
     
     def log_likelihood(self, data):
         H = self(data)
-        covariance_matrix = H @ H.transpose(1, 2) + self.sigma**2 * torch.eye(data.size(1))
+        n_columns = data.shape[1]
+        n_rows = data.shape[0]
+        cov_diag = (self.sigma**2 * torch.ones(n_columns)).reshape((1, n_columns))
+        cov_diag = cov_diag.repeat(n_rows, 1)
+        #covariance_matrix = H @ H.transpose(1, 2) + cov_diag
+
         try:
-            mvn = torch.distributions.MultivariateNormal(torch.zeros(data.size(1)), covariance_matrix)
+            mvn = torch.distributions.LowRankMultivariateNormal(torch.zeros_like(data), cov_factor=H, cov_diag=cov_diag)
             log_prob = mvn.log_prob(data)
-            det_cov = torch.det(covariance_matrix)
-        except torch.linalg.LinAlgError:
+            det_cov = None #torch.det(covariance_matrix)
+        except  Exception as e:     #torch.linalg.LinAlgError:
+            print(e)
             print("Covariance matrix is not positive definite.")
-            print(covariance_matrix)
-            np.save('covariance_matrix_not_positive_definite.npy', covariance_matrix.detach().cpu().numpy())
+            #print(covariance_matrix)
+            np.save('analysis/covariance_matrix_not_positive_definite.npy', covariance_matrix.detach().cpu().numpy())
             # Returning default values to prevent runtime error
             return torch.tensor(0.0), torch.tensor(0.0)
 

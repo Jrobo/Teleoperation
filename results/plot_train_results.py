@@ -1,17 +1,18 @@
 import pandas as pd
 from tabulate import tabulate
 
-# Load the saved data from the CSV file
+# Load the CSV file into a DataFrame
 df = pd.read_csv('results/training_results.csv')
 
-# Select only the first two columns
-#first_two_columns = df.iloc[:, :]
-first_two_columns = df.iloc[:, -1] = df.iloc[:, -1].str[-12:]
+# Extract the last n characters from the 'Image Path' column
+df['Image Path'] = df['Image Path'].str[-2:]
 
+# Extract the last n characters from the 'Numpy Path' column if it exists
+if 'Numpy Path' in df.columns:
+    df['Numpy Path'] = df['Numpy Path'].str[-2:]
 
 # Convert the DataFrame to a tabular format
-table = tabulate(df, headers='keys', tablefmt='pretty', numalign='left')
-
+table = tabulate(df, headers='keys', tablefmt='pretty', showindex=False)
 
 # Display the tabular format
 print(table)

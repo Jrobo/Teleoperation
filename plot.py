@@ -1,8 +1,15 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+from tabulate import tabulate
 # Load the dataset
 data = np.load('joint_data_with_identifiers.npz')
+print(data)
+# Convert the DataFrame to a tabular format
+table = tabulate(df, headers='keys', tablefmt='pretty', numalign='left')
+
+
+# Display the tabular format
+print(table)
 
 # Extract individual arrays from the loaded data
 joint_positions = data['joint_positions']
