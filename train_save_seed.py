@@ -106,7 +106,7 @@ def main(sigma, lr, num_epochs, seed):
     # Save the data as an npy file
     np.save(f'results/loss_sigma_{sigma}_epochs_{num_epochs}_lr_{lr}.npy', np.array([train_losses, val_losses]))
     # Define the filename
-    csv_file = 'results/ttraining_results.csv'
+    csv_file = 'results/tttraining_results.csv'
 
     # Determine the row index
     row_index = 1  # Default to 1 if file is empty
@@ -147,9 +147,9 @@ def main(sigma, lr, num_epochs, seed):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Train a DeepPPCA model')
-    parser.add_argument('--sigma', type=float, default=0.00001, help='Value of sigma.')
+    parser.add_argument('--sigma', type=float, default=0.001, help='Value of sigma.')
     parser.add_argument('--lr', type=float, default=0.0001, help='Learning rate.')
-    parser.add_argument('--num_epochs', type=int, default=100, help='Number of epochs for training.')
+    parser.add_argument('--num_epochs', type=int, default=1000, help='Number of epochs for training.')
     parser.add_argument('--seed', type=int, default=123, help='Random seed for reproducibility.')
 
     args = parser.parse_args()

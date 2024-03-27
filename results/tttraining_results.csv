@@ -1,0 +1,2 @@
+Index,Date Time,Sigma,Learning Rate,Epochs,Seed,Training Time,Training Set Size,Image Path,Numpy Path
+1,2024-03-27_15-37,0.01,0.0001,10000,123,9867.39152,1743,./Images_Plots/symlog_sig_0.01_eph_10000_lr_0.0001_2024-03-27_15-37.png,./Images_Plots/symlog_sig_0.01_eph_10000_lr_0.0001_2024-03-27_15-37.npy

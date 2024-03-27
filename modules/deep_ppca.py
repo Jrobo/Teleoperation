@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import seaborn as sns
 from matplotlib import animation
-
+import datetime
 
 # Model
 class DeepPPCA(nn.Module):
@@ -58,7 +58,8 @@ class DeepPPCA(nn.Module):
             print(e)
             print("Covariance matrix is not positive definite.")
             #print(covariance_matrix)
-            np.save('analysis/covariance_matrix_not_positive_definite.npy', covariance_matrix.detach().cpu().numpy())
+            np.save(f'analysis/cov_mtrx_not_pos_def_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}_sigma_{self.sigma}.npy', H.detach().cpu().numpy())
+            #np.save('analysis/covariance_matrix_not_positive_definite.npy', covariance_matrix.detach().cpu().numpy())
             # Returning default values to prevent runtime error
             return torch.tensor(0.0), torch.tensor(0.0)
 
