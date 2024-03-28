@@ -73,7 +73,7 @@ def main(sigma, lr, num_epochs, seed, ema_alpha):
     set_random_seed(seed)
 
     # Load data
-    train_dataset, val_dataset, test_dataset = load_data('/home/jamil/PyRep/projects/joint_data_with_identifiers.npz')
+    train_dataset, val_dataset, test_dataset = load_data('joint_data_with_identifiers.npz')
 
     # data loaders
     train_loader, val_loader, test_loader = create_data_loaders(train_dataset, val_dataset, test_dataset)
@@ -158,7 +158,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Train a DeepPPCA model')
     parser.add_argument('--sigma', type=float, default=0.001, help='Value of sigma.')
     parser.add_argument('--lr', type=float, default=0.0001, help='Learning rate.')
-    parser.add_argument('--num_epochs', type=int, default=10, help='Number of epochs for training.')
+    parser.add_argument('--num_epochs', type=int, default=10000, help='Number of epochs for training.')
     parser.add_argument('--seed', type=int, default=123, help='Random seed for reproducibility.')
     parser.add_argument('--ema_alpha', type=float, default=0.9, help='Alpha value for Exponential Moving Average.')
 
