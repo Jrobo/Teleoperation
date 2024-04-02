@@ -110,10 +110,14 @@ def main(sigma, lr, num_epochs, seed, ema_alpha):
     # data
     loss_val_data = np.array([train_losses, val_losses])
 
+    # Calculate difference between the last values of train_losses and val_losses
+    last_train_loss = ema_train_losses[-1]
+    last_val_loss = ema_val_losses [-1]
+    loss_difference = last_train_loss - last_val_loss
     # Save the data as an npy file
-    np.save(f'results/loss_sigma_{sigma}_epochs_{num_epochs}_lr_{lr}.npy', np.array([train_losses, val_losses]))
+    np.save(f'results/loss_sigma_{sigma}_epochs_{num_epochs}_lr_{lr}_{current_time}.npy', np.array([train_losses, val_losses]))
     # Define the filename
-    csv_file = 'results/tttraining_results.csv'
+    csv_file = 'results/Ttttraining_results.csv'
 
     # Determine the row index
     row_index = 1  # Default to 1 if file is empty
@@ -127,11 +131,11 @@ def main(sigma, lr, num_epochs, seed, ema_alpha):
     with open(csv_file, mode='a', newline='') as file:
         writer = csv.writer(file)
         if row_index == 1:  # Check if the file is empty
-            writer.writerow(['Index', 'Date Time', 'Sigma', 'Learning Rate', 'Epochs', 'Seed', 'Training Time', 'Training Set Size', 'Image Path','Numpy Path'])
-        writer.writerow([row_index, current_time, sigma, lr, num_epochs, seed, round(training_time, 5), train_set_size, image_path,npy_path])
-
+            writer.writerow(['Index', 'Date Time', 'Sigma', 'Loss Difference', 'Learning Rate', 'Epochs', 'Seed', 'Training Time', 'Training Set Size', 'Image Path', 'Numpy Path']) 
+        writer.writerow([row_index, current_time, sigma,  loss_difference , lr, num_epochs, seed, round(training_time, 5), train_set_size, image_path, npy_path])
+    
     # Save 
-    torch.save(h_theta_model.state_dict(), f'./saved_models/ppca_model.pth')
+    torch.save(h_theta_model.state_dict(), f'./saved_models/ppca_model_{sigma}_eph_{num_epochs}_lr_{lr}_{current_time}.pth')
     print("Model saved.")
     print("tran losses",len(train_losses))
     print("val losses",len(val_losses))
@@ -156,9 +160,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Train a DeepPPCA model')
     parser.add_argument('--sigma', type=float, default=0.001, help='Value of sigma.')
     parser.add_argument('--lr', type=float, default=0.0001, help='Learning rate.')
-    parser.add_argument('--num_epochs', type=int, default=20000, help='Number of epochs for training.')
+    parser.add_argument('--num_epochs', type=int, default=100, help='Number of epochs for training.')
     parser.add_argument('--seed', type=int, default=123, help='Random seed for reproducibility.')
-    parser.add_argument('--ema_alpha', type=float, default=0.9, help='Alpha value for Exponential Moving Average.')
+    parser.add_argument('--ema_alpha', type=float, default=0.6, help='Alpha value for Exponential Moving Average.')
 
     args = parser.parse_args()
 
