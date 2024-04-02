@@ -156,7 +156,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Train a DeepPPCA model')
     parser.add_argument('--sigma', type=float, default=0.1, help='Value of sigma.')
     parser.add_argument('--lr', type=float, default=0.0001, help='Learning rate.')
+<<<<<<< HEAD
     parser.add_argument('--num_epochs', type=int, default=5000, help='Number of epochs for training.')
+=======
+    parser.add_argument('--num_epochs', type=int, default=10000, help='Number of epochs for training.')
+>>>>>>> ca4a3d8a3bdd3545098b36d20db78ceea95180c1
     parser.add_argument('--seed', type=int, default=123, help='Random seed for reproducibility.')
     parser.add_argument('--ema_alpha', type=float, default=0.9, help='Alpha value for Exponential Moving Average.')
 

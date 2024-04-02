@@ -1,8 +1,13 @@
 Index,Date Time,Sigma,Learning Rate,Epochs,Seed,Training Time,Training Set Size,Image Path,Numpy Path
 1,2024-03-27_15-37,0.01,0.0001,10000,123,9867.39152,1743,./Images_Plots/symlog_sig_0.01_eph_10000_lr_0.0001_2024-03-27_15-37.png,./Images_Plots/symlog_sig_0.01_eph_10000_lr_0.0001_2024-03-27_15-37.npy
+<<<<<<< HEAD
 2,2024-03-27_19-24,0.001,0.0001,1000,123,915.11791,1743,./Images_Plots/symlog_sig_0.001_eph_1000_lr_0.0001_2024-03-27_19-24.png,./Images_Plots/symlog_sig_0.001_eph_1000_lr_0.0001_2024-03-27_19-24.npy
 3,2024-03-27_19-57,0.001,0.0001,2000,123,1875.50879,1743,./Images_Plots/symlog_sig_0.001_eph_2000_lr_0.0001_2024-03-27_19-57.png,./Images_Plots/symlog_sig_0.001_eph_2000_lr_0.0001_2024-03-27_19-57.npy
 4,2024-03-27_21-28,0.001,0.0001,5000,123,4909.0525,1743,./Images_Plots/symlog_sig_0.001_eph_5000_lr_0.0001_2024-03-27_21-28.png,./Images_Plots/symlog_sig_0.001_eph_5000_lr_0.0001_2024-03-27_21-28.npy
 5,2024-03-28_13-33,0.001,0.0001,10,123,8.89374,1743,./Images_Plots/symlog_sig_0.001_eph_10_lr_0.0001_2024-03-28_13-33.png,./Images_Plots/symlog_sig_0.001_eph_10_lr_0.0001_2024-03-28_13-33.npy
 6,2024-03-29_17-10,0.001,0.0001,10000,123,10808.09288,1743,./Images_Plots/symlog_sig_0.001_eph_10000_lr_0.0001_2024-03-29_17-10.png,./Images_Plots/symlog_sig_0.001_eph_10000_lr_0.0001_2024-03-29_17-10.npy
 7,2024-03-29_23-12,0.001,0.0001,20000,123,20260.46314,1743,./Images_Plots/symlog_sig_0.001_eph_20000_lr_0.0001_2024-03-29_23-12.png,./Images_Plots/symlog_sig_0.001_eph_20000_lr_0.0001_2024-03-29_23-12.npy
+=======
+2,2024-03-28_13-56,0.001,0.0001,10,123,9.1343,1743,./Images_Plots/symlog_sig_0.001_eph_10_lr_0.0001_2024-03-28_13-56.png,./Images_Plots/symlog_sig_0.001_eph_10_lr_0.0001_2024-03-28_13-56.npy
+3,2024-03-28_16-21,0.001,0.0001,10000,123,8654.07669,1743,./Images_Plots/symlog_sig_0.001_eph_10000_lr_0.0001_2024-03-28_16-21.png,./Images_Plots/symlog_sig_0.001_eph_10000_lr_0.0001_2024-03-28_16-21.npy
+>>>>>>> ca4a3d8a3bdd3545098b36d20db78ceea95180c1
