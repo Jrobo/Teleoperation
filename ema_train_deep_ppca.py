@@ -117,7 +117,7 @@ def main(sigma, lr, num_epochs, seed, ema_alpha):
     # Save the data as an npy file
     np.save(f'results/loss_sigma_{sigma}_epochs_{num_epochs}_lr_{lr}_{current_time}.npy', np.array([train_losses, val_losses]))
     # Define the filename
-    csv_file = 'results/Ttttraining_results.csv'
+    csv_file = 'results/Training_results.csv'
 
     # Determine the row index
     row_index = 1  # Default to 1 if file is empty
