@@ -1,0 +1,2 @@
+Index,Date Time,Sigma,Loss Difference,Learning Rate,Epochs,Seed,Training Time,Training Set Size,Image Path,Numpy Path
+1,2024-04-03_09-18,0.1,-5.209579230040608,0.0001,30000,123,30618.0222,1743,./Images_Plots/symlog_sig_0.1_eph_30000_lr_0.0001_2024-04-03_09-18.png,./Images_Plots/symlog_sig_0.1_eph_30000_lr_0.0001_2024-04-03_09-18.npy
