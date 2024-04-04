@@ -1,3 +1,4 @@
 Index,Date Time,Sigma,Loss Difference,Learning Rate,Epochs,Seed,Training Time,Training Set Size,Image Path,Numpy Path
 1,2024-04-03_09-18,0.1,-5.209579230040608,0.0001,30000,123,30618.0222,1743,./Images_Plots/symlog_sig_0.1_eph_30000_lr_0.0001_2024-04-03_09-18.png,./Images_Plots/symlog_sig_0.1_eph_30000_lr_0.0001_2024-04-03_09-18.npy
 2,2024-04-04_00-16,1.0,-0.0348088958092756,0.0001,20000,123,17587.45353,1743,./Images_Plots/symlog_sig_1.0_eph_20000_lr_0.0001_2024-04-04_00-16.png,./Images_Plots/symlog_sig_1.0_eph_20000_lr_0.0001_2024-04-04_00-16.npy
+3,2024-04-04_17-46,2.0,-0.03618960655300363,0.0001,20000,123,17444.12927,1743,./Images_Plots/symlog_sig_2.0_eph_20000_lr_0.0001_2024-04-04_17-46.png,./Images_Plots/symlog_sig_2.0_eph_20000_lr_0.0001_2024-04-04_17-46.npy
