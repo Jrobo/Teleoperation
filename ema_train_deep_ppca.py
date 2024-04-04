@@ -108,16 +108,55 @@ def main(sigma, lr, num_epochs, seed, ema_alpha):
     npy_path = os.path.splitext(image_path)[0] + '.npy'
 
     # data
-    loss_val_data = np.array([train_losses, val_losses])
+    #loss_val_data = np.array([train_losses, val_losses])
 
-    # Calculate difference between the last values of train_losses and val_losses
-    last_train_loss = ema_train_losses[-1]
-    last_val_loss = ema_val_losses [-1]
-    loss_difference = last_train_loss - last_val_loss
-    # Save the data as an npy file
-    np.save(f'results/loss_sigma_{sigma}_epochs_{num_epochs}_lr_{lr}_{current_time}.npy', np.array([train_losses, val_losses]))
+    # last 100 values of train_losses and val_losses
+    last_100_train_losses = ema_train_losses[-100:]
+    last_100_val_losses = ema_val_losses[-100:]
+
+    last_value_train_loss = ema_train_losses[-1]
+    last_value_val_loss = ema_val_losses [-1]
+
+    # Convert the float values to strings
+    train_losses_str = str(last_value_train_loss)
+    val_losses_str = str(last_value_val_loss)
+
+    # # Save the data as an npy file
+    # np.save(f'results/Loss_sigma_{sigma}_epochs_{num_epochs}_lr_{lr}_{current_time}.npy', np.array([train_losses, val_losses]))
+    # np.save(f'results/Loss_sigma_{sigma}_epochs_{num_epochs}_lr_{lr}_{current_time}_last100trainLoss.npy', np.array([last_100_train_losses]))
+    # np.save(f'results/Loss_sigma_{sigma}_epochs_{num_epochs}_lr_{lr}_{current_time}_last100valLoss.npy', np.array([last_100_val_losses]))
+
+    
+
+
     # Define the filename
     csv_file = 'results/Training_results.csv'
+
+    # Determine the row index
+    # row_index = 1  # Default to 1 if file is empty
+    # if os.path.isfile(csv_file):
+    #     with open(csv_file, mode='r') as file:
+    #         # Check if the file is empty
+    #         if os.stat(csv_file).st_size > 0:
+    #             row_index = sum(1 for line in file)
+
+    # # Write data to CSV file
+    # with open(csv_file, mode='a', newline='') as file:
+    #     writer = csv.writer(file)
+    #     if row_index == 1:  # Check if the file is empty
+    #         writer.writerow(['Index', 'Date Time', 'Sigma', 'train_loss_last_value','val_loss_last_value', 'Learning Rate', 'Epochs', 'Seed', 'Training Time', 'Training Set Size', 'Image Path', 'Numpy Path']) 
+    #     writer.writerow([row_index, current_time, sigma , last_value_train_loss,last_value_val_loss, lr, num_epochs, seed, round(training_time, 5), train_set_size, image_path, npy_path])
+    
+   
+
+    # Save the numpy arrays
+    train_val_loss_file_path = f'results/Loss_sigma_{sigma}_epochs_{num_epochs}_lr_{lr}_{current_time}.npy'
+    last_100_train_loss_file_path = f'results/Loss_sigma_{sigma}_epochs_{num_epochs}_lr_{lr}_{current_time}_last100trainLoss.npy'
+    last_100_val_loss_file_path = f'results/Loss_sigma_{sigma}_epochs_{num_epochs}_lr_{lr}_{current_time}_last100valLoss.npy'
+
+    np.save(train_val_loss_file_path, np.array([train_losses, val_losses]))
+    np.save(last_100_train_loss_file_path, np.array([last_100_train_losses]))
+    np.save(last_100_val_loss_file_path, np.array([last_100_val_losses]))
 
     # Determine the row index
     row_index = 1  # Default to 1 if file is empty
@@ -131,9 +170,10 @@ def main(sigma, lr, num_epochs, seed, ema_alpha):
     with open(csv_file, mode='a', newline='') as file:
         writer = csv.writer(file)
         if row_index == 1:  # Check if the file is empty
-            writer.writerow(['Index', 'Date Time', 'Sigma', 'Loss Difference', 'Learning Rate', 'Epochs', 'Seed', 'Training Time', 'Training Set Size', 'Image Path', 'Numpy Path']) 
-        writer.writerow([row_index, current_time, sigma,  loss_difference , lr, num_epochs, seed, round(training_time, 5), train_set_size, image_path, npy_path])
-    
+            writer.writerow(['Index', 'Date Time', 'Sigma', 'train_loss_last_value','val_loss_last_value','Learning Rate', 'Epochs', 'Seed', 'Training Time', 'Training Set Size', 'Image Path', 'Numpy Path', 'Last 100 Train Losses', 'Last 100 Val Losses', 'Train Val Loss File Path', 'Last 100 Train Loss File Path', 'Last 100 Val Loss File Path']) 
+        writer.writerow([row_index, current_time, sigma,last_value_train_loss,last_value_val_loss, lr, num_epochs, seed, round(training_time, 5), train_set_size, image_path, npy_path, train_losses_str, val_losses_str, train_val_loss_file_path, last_100_train_loss_file_path, last_100_val_loss_file_path])
+
+
     # Save 
     torch.save(h_theta_model.state_dict(), f'./saved_models/ppca_model_{sigma}_eph_{num_epochs}_lr_{lr}_{current_time}.pth')
     print("Model saved.")
