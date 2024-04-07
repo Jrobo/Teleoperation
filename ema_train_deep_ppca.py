@@ -183,18 +183,22 @@ def main(sigma, lr, num_epochs, seed, ema_alpha):
     print("length of train loader",len(val_loader))
     print("length of test loader",len(test_loader))
 
-    # # Plot
-    # plt.figure(figsize=(10, 6))
-    # plt.plot(ema_train_losses, linestyle='--', label='EMA Train')
-    # plt.plot(ema_val_losses, linestyle='--', label='EMA Validation')
-    # plt.xlabel('Epoch')
-    # plt.ylabel('Log-Likelihood')
-    # plt.yscale('symlog')  # Set y-axis scale to symlog
-    # plt.legend()
-    # # Include parameters in the plot title
-    # plt.title(f"Sigma: {sigma}, Epochs: {num_epochs}")
-    # plt.savefig(image_path)
-    # plt.show()
+    # Plot
+    plt.figure(figsize=(10, 6))
+    plt.plot(ema_train_losses, linestyle='--', label='EMA Train')
+    plt.plot(ema_val_losses, linestyle='--', label='EMA Validation')
+    plt.xlabel('Epoch')
+    plt.ylabel('Log-Likelihood')
+    plt.yscale('symlog')  # Set y-axis scale to symlog
+    plt.legend()
+    # Include parameters in the plot title
+    plt.title(f"Sigma: {sigma}, Epochs: {num_epochs}")
+
+   # Save the plot without displaying it
+    plt.savefig(image_path)
+
+    # Close the plot
+    plt.close()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Train a DeepPPCA model')
