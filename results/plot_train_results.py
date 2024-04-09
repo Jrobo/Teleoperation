@@ -1,25 +1,13 @@
+# Step 1: Import the pandas library
 import pandas as pd
 from tabulate import tabulate
 
-# Load the CSV file into a DataFrame
-df = pd.read_csv('results/TestTraining_results.csv')
+# Step 2: Read CSV file and specify to read only the 4th column
+# Replace 'results/Training_results.csv' with the actual path to your CSV file
+df = pd.read_csv('results/Training_results.csv', usecols=[1,2,3,4])
 
-# # Extract the last n characters from the 'Image Path' column
-# df['Image Path'] = df['Image Path'].str[-2:]
+# Step 3: Convert DataFrame to a tabular format
+table = tabulate(df, headers='keys', tablefmt='grid')
 
-# # Extract the last n characters from the 'Numpy Path' column if it exists
-# if 'Numpy Path' in df.columns:
-#     df['Numpy Path'] = df['Numpy Path'].str[-2:]
-
-# Select only the first 5 columns
-df_first_5_columns = df.iloc[:, :10]
-
-# Convert the DataFrame to a tabular format
-table = tabulate(df_first_5_columns, headers='keys', tablefmt='pretty', showindex=False)
-
-
-# Convert the DataFrame to a tabular format
-#table = tabulate(df, headers='keys', tablefmt='pretty', showindex=False)
-
-# Display the tabular format
+# Step 4: Print the tabulated DataFrame
 print(table)

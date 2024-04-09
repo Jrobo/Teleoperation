@@ -130,7 +130,7 @@ def main(sigma, lr, num_epochs, seed, ema_alpha):
 
 
     # Define the filename
-    csv_file = 'results/Training_results.csv'
+    csv_file = 'results/trTraining_results.csv'
 
     # Determine the row index
     # row_index = 1  # Default to 1 if file is empty
@@ -204,7 +204,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Train a DeepPPCA model')
     parser.add_argument('--sigma', type=float, default=0.1, help='Value of sigma.')
     parser.add_argument('--lr', type=float, default=0.0001, help='Learning rate.')
-    parser.add_argument('--num_epochs', type=int, default=30000, help='Number of epochs for training.')
+    parser.add_argument('--num_epochs', type=int, default=30, help='Number of epochs for training.')
     parser.add_argument('--seed', type=int, default=123, help='Random seed for reproducibility.')
     parser.add_argument('--ema_alpha', type=float, default=0.01, help='Alpha value for Exponential Moving Average.')
 
