@@ -2,7 +2,7 @@ import pandas as pd
 from tabulate import tabulate
 
 # Load the CSV file into a DataFrame
-df = pd.read_csv('results/TestTraining_results.csv')
+df = pd.read_csv('results/Training_results.csv')
 
 # # Extract the last n characters from the 'Image Path' column
 # df['Image Path'] = df['Image Path'].str[-2:]
