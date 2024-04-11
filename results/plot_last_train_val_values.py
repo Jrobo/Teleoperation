@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import glob
 import shutil
 import os
-
+''''''
 # Define the directory where your files are located
 directory = "/home/jamil/PyRep/projects/results/"
 
@@ -14,7 +14,7 @@ pattern = directory + "*last100valLoss.npy"# may change with train
 files = glob.glob(pattern)
 
 # Create a new directory to save the files
-destination_directory = "/home/jamil/PyRep/projects/results/all_last100_loss_data/"
+destination_directory = "/home/jamil/PyRep/projects/results/lastvalues100/"
 os.makedirs(destination_directory, exist_ok=True)
 
 # Print the number of files found

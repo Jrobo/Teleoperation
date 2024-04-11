@@ -6,7 +6,7 @@ from tabulate import tabulate
 import matplotlib.pyplot as plt
 
 # Define the directory where your files are located
-directory = "/home/jamil/PyRep/projects/results/all_last100_loss_data/"
+directory = "/home/jamil/PyRep/projects/results/lastvalues100/"
 
 # Initialize lists to store data
 file_names = []
@@ -22,7 +22,7 @@ val_pattern = r"val_([\d.]+)"
 
 # Iterate over each file in the directory
 for filename in os.listdir(directory):
-    if filename.endswith(".npy") and "epochs_25000" in filename:
+    if filename.endswith(".npy") and "epochs_30000" in filename:
         file_names.append(filename)
         filepath = os.path.join(directory, filename)
         # Load the data from the file
@@ -73,15 +73,15 @@ val_loss_data = data_df[data_df['File Name'].str.endswith('last100valLoss.npy')]
 train_loss_data = data_df[data_df['File Name'].str.endswith('last100trainLoss.npy')]
 
 # Plot the values
-
-#plt.plot(val_loss_data['Sigma Value'], val_loss_data['Average Value'], 'bo', label='Val Loss')
 plt.plot(train_loss_data['Sigma Value'], train_loss_data['Average Value'], 'ro', label='Train Loss')
+plt.plot(val_loss_data['Sigma Value'], val_loss_data['Average Value'], 'b+', label='Val Loss')
+
 plt.xlabel('Sigma Value')
+plt.xscale('log')
 plt.ylabel('Loss Value')
 plt.title('Loss Value vs Sigma Value')
 plt.legend()
 plt.grid(True)
-
 # Print the sorted values in tabulate format
 print("Sorted Val Loss Data:")
 print(tabulate(val_loss_data.sort_values(by='Average Value'), headers='keys', tablefmt='grid', showindex=False))
