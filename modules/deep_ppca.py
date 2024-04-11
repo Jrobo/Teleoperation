@@ -49,24 +49,34 @@ class DeepPPCA(nn.Module):
         shape of mvn is (4,7)
         Output=data(4,7)'''
         H = self(data)#shape of H torch.Size([4, 7, 7])
-        print("shape of H",H.size())
+        #print("shape of H",H.size())
         n_columns = data.shape[1] #n_columns shape 7
-        print("n_columns shape",n_columns)
+        #print("n_columns shape",n_columns)
         n_rows = data.shape[0]#n rows shape 4
+<<<<<<< HEAD
         print("n rows shape",n_rows)
         #ask: why use this formula, not include HHT
         cov_diag = (self.sigma**2 * torch.ones(n_columns)).reshape((1, n_columns))#cov diagonal before repeat torch.Size([1, 7])
         print("cov diagonal before repeat",cov_diag.size())
         '''here we are adding noise of sigma value to all four datas in data loader, so repeated'''
+=======
+        #print("n rows shape",n_rows)
+        cov_diag = (self.sigma**2 * torch.ones(n_columns)).reshape((1, n_columns))#cov diagonal before repeat torch.Size([1, 7])
+        #print("cov diagonal before repeat",cov_diag.size())
+>>>>>>> ce46ca8cd2b7a743e7e588b3cd36981862958b02
         cov_diag = cov_diag.repeat(n_rows, 1)#cov diag after repeat torch.Size([4, 7])
-        print("cov diag after repeat",cov_diag.size())
+        #print("cov diag after repeat",cov_diag.size())
         #covariance_matrix = H @ H.transpose(1, 2) + cov_diag
 
         try:
             mvn = torch.distributions.LowRankMultivariateNormal(torch.zeros_like(data), cov_factor=H, cov_diag=cov_diag)#mvn shape: torch.Size([7])
+<<<<<<< HEAD
             print("mvn shape:", mvn.event_shape)#mvn shape: torch.Size([7])
+=======
+            #print("mvn shape:", mvn.event_shape)
+>>>>>>> ce46ca8cd2b7a743e7e588b3cd36981862958b02
             log_prob = mvn.log_prob(data)#Shape of log_prob: torch.Size([4])
-            print("Shape of log_prob:", log_prob.shape)
+            #print("Shape of log_prob:", log_prob.shape)
             det_cov = None #torch.det(covariance_matrix)
         except  Exception as e:     #torch.linalg.LinAlgError:
             print(e)
@@ -101,7 +111,7 @@ class DeepPPCA(nn.Module):
             eigenvalues_sign = torch.sign(eigenvalues[idx])
             #print(torch.sign(eigenvectors[0, idx]), eigenvectors[:, idx])
             eigenvectors = eigenvectors[:,idx] * torch.sign(eigenvectors[0, idx])
-            print("Eigen vectors calculted in get transformation function shape",eigenvectors.size)
+            #print("Eigen vectors calculted in get transformation function shape",eigenvectors.size)
             #print(eigenvectors)
             return covariance_matrix, eigenvectors
 
@@ -119,7 +129,7 @@ class DeepPPCA(nn.Module):
             robot_state_torch = torch.tensor(robot_state, dtype=torch.float32).unsqueeze(0)
             joystick_torch = torch.tensor(joystick, dtype=torch.float32)
             H_pred=self.get_mode_transformation(robot_state_torch, mode)
-            print("H_pred calculated inside predicted velocuty function",H_pred.size)
+            #print("H_pred calculated inside predicted velocuty function",H_pred.size)
             self.robot_state_torch = robot_state_torch
             #print("H prediction before multiplying joystick values",H_pred)
             ret = (H_pred @ joystick_torch).squeeze()  
