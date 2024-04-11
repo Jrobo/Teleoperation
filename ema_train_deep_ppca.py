@@ -44,9 +44,9 @@ def train_model(model, train_loader, val_loader, optimizer, num_epochs):
         total_loss = 0.0  # Initialize total_loss 
         # Training
         model.train()  # training mode
-        for inputs, _ in train_loader:
+        for inputs, outputs in train_loader:
             optimizer.zero_grad()
-            log_prob, det_cov = model.log_likelihood(inputs)
+            log_prob, det_cov = model.log_likelihood(inputs,outputs)
             nll = -log_prob.mean() # + 0.5 * torch.log(det_cov).mean()
             nll.backward()
             optimizer.step()
