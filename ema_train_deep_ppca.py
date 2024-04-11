@@ -29,8 +29,8 @@ def evaluate_model(model, dataloader):
     total_nll = 0
     total_samples = 0 
     with torch.no_grad():
-        for inputs, _ in dataloader:
-            log_prob, det_cov = model.log_likelihood(inputs)
+        for inputs, outputs in dataloader:
+            log_prob, det_cov = model.log_likelihood(inputs,outputs)
             nll = -log_prob.mean() #+ 0.5 * torch.log(det_cov).mean()
             total_nll += nll.item() * inputs.size(0)  # Sum up 
             total_samples += inputs.size(0)  
@@ -204,7 +204,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Train a DeepPPCA model')
     parser.add_argument('--sigma', type=float, default=0.1, help='Value of sigma.')
     parser.add_argument('--lr', type=float, default=0.0001, help='Learning rate.')
-    parser.add_argument('--num_epochs', type=int, default=30, help='Number of epochs for training.')
+    parser.add_argument('--num_epochs', type=int, default=100, help='Number of epochs for training.')
     parser.add_argument('--seed', type=int, default=123, help='Random seed for reproducibility.')
     parser.add_argument('--ema_alpha', type=float, default=0.01, help='Alpha value for Exponential Moving Average.')
 
