@@ -1,21 +1,37 @@
-#!/bin/bash
+  GNU nano 6.2                        train2.sh                                 
+# Command 9
+echo "Training with sigma=0.0001"
+python3 ema_train_deep_ppca.py --sigma 0.1 --lr 0.0001 --num_epochs 30000
 
-# Command 1
+# Command 10
+echo "Training with sigma=0.0006"
+python3 ema_train_deep_ppca.py --sigma 0.4 --lr 0.0001 --num_epochs 30000
 
-#echo "Training with sigma=0.001"
-#python3 ema_train_deep_ppca.py --sigma 0.001 --lr 0.0001 --num_epochs 30000 --seed 123 --ema_alpha 0.01
+# Command 11
+echo "Training with sigma=0.004"
+python3 ema_train_deep_ppca.py --sigma 0.6 --lr 0.0001 --num_epochs 30000
 
-# Command 2
-#echo "Training with sigma=0.00"
-#python3 ema_train_deep_ppca.py --sigma 0.01 --lr 0.0001 --num_epochs 30000 --seed 123 --ema_alpha 0.01
+# Command 12
+echo "Training with sigma=0.006"
+python3 ema_train_deep_ppca.py --sigma 0.006 --lr 0.0001 --num_epochs 30000
+
+# Command 13
+echo "Training with sigma=0.03"
+python3 ema_train_deep_ppca.py --sigma 0.03 --lr 0.0001 --num_epochs 30000
+
+# Command 14
+echo "Training with sigma=0.2"
+python3 ema_train_deep_ppca.py --sigma 0.2 --lr 0.0001 --num_epochs 30000
+
+# Command 15
+echo "Training with sigma=0.3"
+python3 ema_train_deep_ppca.py --sigma 0.3 --lr 0.0001 --num_epochs 30000
+
+# Command 16
+echo "Training with sigma=2"
+python3 ema_train_deep_ppca.py --sigma 2 --lr 0.4 --num_epochs 30000
 
 
-# Command 3
-echo "Training with sigma=0.04"
-python3 ema_train_deep_ppca.py --sigma 0.04 --lr 0.0001 --num_epochs 30000 --s>
 
-# Command 4
-echo "Training with sigma=0.06"
-python3 ema_train_deep_ppca.py --sigma 0.06 --lr 0.0001 --num_epochs 30000 --s>
 
 
