@@ -1,25 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from tabulate import tabulate
+
 # Load the dataset
 data = np.load('joint_data_with_identifiers.npz')
-print(data)
-# Convert the DataFrame to a tabular format
-table = tabulate(df, headers='keys', tablefmt='pretty', numalign='left')
-
-
-# Display the tabular format
-print(table)
 
 # Extract individual arrays from the loaded data
 joint_positions = data['joint_positions']
 joint_velocities = data['joint_velocities']
 identifiers = data['identifiers']
-identifiers = data['identifiers']
 
 # Find the maximum value reached
 max_value_reached = np.max(identifiers)
-
 
 # Print shape and dtype of each array
 print("Joint Positions:")
@@ -37,16 +29,20 @@ print("Maximum value reached in identifiers:", max_value_reached)
 fig, axs = plt.subplots(3, 1, figsize=(10, 15))
 
 # Plot joint positions
-axs[0].plot(joint_positions)
+for i in range(joint_positions.shape[1]):
+    axs[0].plot(joint_positions[:, i], label=f'Joint {i+1}')
 axs[0].set_title('Joint Positions')
 axs[0].set_xlabel('Sample Index')
 axs[0].set_ylabel('Position')
+axs[0].legend()
 
 # Plot joint velocities
-axs[1].plot(joint_velocities)
+for i in range(joint_velocities.shape[1]):
+    axs[1].plot(joint_velocities[:, i], label=f'Joint {i+1}')
 axs[1].set_title('Joint Velocities')
 axs[1].set_xlabel('Sample Index')
 axs[1].set_ylabel('Velocity')
+axs[1].legend()
 
 # Plot identifiers
 axs[2].plot(identifiers)
