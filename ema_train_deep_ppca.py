@@ -189,7 +189,7 @@ def main(sigma, lr, num_epochs, seed, ema_alpha):
     plt.plot(ema_val_losses, linestyle='--', label='EMA Validation')
     plt.xlabel('Epoch')
     plt.ylabel('Log-Likelihood')
-    plt.yscale('symlog')  # Set y-axis scale to symlog
+    plt.yscale('symlog')  #Set y-axis scale to symlog
     plt.legend()
     # Include parameters in the plot title
     plt.title(f"Sigma: {sigma}, Epochs: {num_epochs}")

@@ -5,8 +5,8 @@ import pandas as pd
 from tabulate import tabulate
 import matplotlib.pyplot as plt
 
-# Define the directory where your files are located
-directory = "/home/jamil/PyRep/projects/results/lastvalues100/"
+# Directory where your files are located
+directory = "/home/jamil/PyRep/projects/results/last100vaues2/"
 
 # Initialize lists to store data
 file_names = []
@@ -15,7 +15,7 @@ sigma_values = []
 train_values = []
 val_values = []
 
-# Define the regex patterns to extract values
+# Regex patterns to extract values
 sigma_pattern = r"sigma_([\d.]+)"
 train_pattern = r"train_([\d.]+)"
 val_pattern = r"val_([\d.]+)"
@@ -65,7 +65,7 @@ data_df = pd.DataFrame({
 })
 
 
-# Print the DataFrame in tabulate format
+# DataFrame in tabulate format
 print(tabulate(data_df, headers='keys', tablefmt='grid', showindex=False))
 
 # Filter data for files ending with "last100valLoss" and "last100trainLoss"
@@ -82,6 +82,7 @@ plt.ylabel('Loss Value')
 plt.title('Loss Value vs Sigma Value')
 plt.legend()
 plt.grid(True)
+
 # Print the sorted values in tabulate format
 print("Sorted Val Loss Data:")
 print(tabulate(val_loss_data.sort_values(by='Average Value'), headers='keys', tablefmt='grid', showindex=False))

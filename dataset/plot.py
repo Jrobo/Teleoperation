@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from tabulate import tabulate
 
 # Load the dataset
-data = np.load('joint_data_with_identifiers.npz')
+data = np.load('uniform_dataset.npz')
 
 # Extract individual arrays from the loaded data
 joint_positions = data['joint_positions']
