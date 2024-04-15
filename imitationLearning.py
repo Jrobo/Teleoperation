@@ -55,7 +55,7 @@ demo_identifiers = np.array(demo_identifiers)
 
 # Save 
 current_directory = os.getcwd()
-npy_filename = 'joint_data_with_identifiers.npz'
+npy_filename = 'dataset/joint_data_with_identifiers.npz'
 npy_filepath = os.path.join(current_directory, npy_filename)
 
 np.savez(npy_filepath, 

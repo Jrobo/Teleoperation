@@ -71,7 +71,7 @@ def main(sigma, lr, num_epochs, seed):
     set_random_seed(seed)
 
     # Load data
-    train_dataset, val_dataset, test_dataset = load_data('/home/jamil/PyRep/projects/joint_data_with_identifiers.npz')
+    train_dataset, val_dataset, test_dataset = load_data('/home/jamil/PyRep/projects/dataset/joint_data_with_identifiers.npz')
 
     # data loaders
     train_loader, val_loader, test_loader = create_data_loaders(train_dataset, val_dataset, test_dataset)

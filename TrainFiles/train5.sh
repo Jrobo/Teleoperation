@@ -23,3 +23,4 @@ python3 ema_train_deep_ppca.py --sigma 0.003 --lr 0.0001 --num_epochs 30000 --se
 # # Command 17
 # echo "Training with sigma= 5"
 # python3 ema_train_deep_ppca.py --sigma 5 --lr 0.0001 --num_epochs 30000 --seed 123 --ema_alpha 0.02
+
