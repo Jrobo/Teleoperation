@@ -1,6 +1,6 @@
 #!/bin/bash
 #Doing the same values with different seed (42) part 1
-
+#export PYTHONPATH=$PYTHONPATH:/home/kazi.jamil/Teleoperation
 # Command 1
 echo "Training with sigma= 1"
 python3 ema_train_deep_ppca.py --sigma 1 --lr 0.0001 --num_epochs 30000 --seed 42 --ema_alpha 0.02
