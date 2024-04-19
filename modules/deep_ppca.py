@@ -72,7 +72,7 @@ class DeepPPCA(nn.Module):
             #print("mvn shape:", mvn.event_shape)
             log_prob = mvn.log_prob(target)#Shape of log_prob: torch.Size([4])# input is velocity
             #print("Shape of log_prob:", log_prob.shape)
-            det_cov = None #torch.det(covariance_matrix)
+            #det_cov = None #torch.det(covariance_matrix)
         except  Exception as e:     #torch.linalg.LinAlgError:
             print(e)
             print("Covariance matrix is not positive definite.")
@@ -80,9 +80,9 @@ class DeepPPCA(nn.Module):
             np.save(f'analysis/Covarience_matrix/cov_mtrx_not_pos_def_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}_sigma_{self.sigma}.npy', H.detach().cpu().numpy())
             #np.save('analysis/covariance_matrix_not_positive_definite.npy', covariance_matrix.detach().cpu().numpy())
             # Returning default values to prevent runtime error
-            return torch.tensor(0.0), torch.tensor(0.0)
+            return None #torch.tensor(0.0), torch.tensor(0.0)
 
-        return log_prob, det_cov
+        return log_prob
 
             
     def get_transformation(self, data):
