@@ -31,58 +31,38 @@ class DeepPPCA(nn.Module):
         #print("size of H",H.shape)
         return H
     
-    # def log_likelihood(self, data):
-    #     H = self(data)
-    #     covariance_matrix = H @ H.transpose(1, 2) + self.sigma**2 * torch.eye(data.size(1))
-    #     print(covariance_matrix)
-    #     #epsilon = 1e-4
-    #     #covariance_matrix = covariance_matrix + epsilon * torch.eye(covariance_matrix.size(-1))
-    #     mvn = torch.distributions.MultivariateNormal(torch.zeros(data.size(1)), covariance_matrix)
-    #     log_prob = mvn.log_prob(data)
-    #     #print("shape of log [prob]",log_prob.shape())
-    #     det_cov = torch.det(covariance_matrix)
-    #     return log_prob, det_cov
-    
     def log_likelihood(self, data, target):
-        '''here we collect the data of input (4,7) and get H [ 7, 7] for 4 , so size is (4,7,7,), 
-        then we add cov_diag as noise by repeting to 4 rows
-        shape of mvn is (4,7)
-        Output=data(4,7)'''
-        H = self(data)#shape of H torch.Size([4, 7, 7])
-        #print("shape of H",H.size())
-        n_columns = data.shape[1] #n_columns shape 7
-        #print("n_columns shape",n_columns)
-        n_rows = data.shape[0]#n rows shape 4
-        #print("n rows shape",n_rows)
-        cov_diag = (self.sigma**2 * torch.ones(n_columns)).reshape((1, n_columns))#cov diagonal before repeat torch.Size([1, 7])
-        #print("cov diagonal before repeat",cov_diag.size())
-        '''here we are adding noise of sigma value to all four datas in data loader, so repeated'''
-
-        #print("n rows shape",n_rows)
-        cov_diag = (self.sigma**2 * torch.ones(n_columns)).reshape((1, n_columns))#cov diagonal before repeat torch.Size([1, 7])
-        #print("cov diagonal before repeat",cov_diag.size())
-        cov_diag = cov_diag.repeat(n_rows, 1)#cov diag after repeat torch.Size([4, 7])
-        #print("cov diag after repeat",cov_diag.size())
-        #covariance_matrix = H @ H.transpose(1, 2) + cov_diag
-
+        H = self(data)
+        log_prob=0
+        n_columns = data.shape[1]
+        n_rows = data.shape[0]
+        cov_diag = (self.sigma**2 * torch.ones(n_columns)).reshape((1, n_columns))
+        cov_diag = cov_diag.repeat(n_rows, 1)
+        status=False
         try:
-            mvn = torch.distributions.LowRankMultivariateNormal(torch.zeros_like(data), cov_factor=H, cov_diag=cov_diag)#mvn shape: torch.Size([7])
-
-            #print("mvn shape:", mvn.event_shape)#mvn shape: torch.Size([7])
-            #print("mvn shape:", mvn.event_shape)
-            log_prob = mvn.log_prob(target)#Shape of log_prob: torch.Size([4])# input is velocity
-            #print("Shape of log_prob:", log_prob.shape)
-            det_cov = None #torch.det(covariance_matrix)
-        except  Exception as e:     #torch.linalg.LinAlgError:
+            mvn = torch.distributions.LowRankMultivariateNormal(torch.zeros_like(data), cov_factor=H, cov_diag=cov_diag)
+            log_prob = mvn.log_prob(data)
+            return status,log_prob
+        except Exception as e:
             print(e)
-            print("Covariance matrix is not positive definite.")
-            #print(covariance_matrix)
+            status=True
             np.save(f'analysis/Covarience_matrix/cov_mtrx_not_pos_def_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}_sigma_{self.sigma}.npy', H.detach().cpu().numpy())
-            #np.save('analysis/covariance_matrix_not_positive_definite.npy', covariance_matrix.detach().cpu().numpy())
-            # Returning default values to prevent runtime error
-            return torch.tensor(0.0), torch.tensor(0.0)
+            return status,log_prob
 
-        return log_prob, det_cov
+        # if log_prob is None:
+        #     print("Encountered None in log probability.")
+        #     return None
+
+        # if torch.isnan(log_prob).any():
+        #     print("Encountered NaN in log probability.")
+        #     return None
+
+        # if torch.isinf(log_prob).any():
+        #     print("Encountered inf in log probability.")
+        #     return None
+
+        
+
 
             
     def get_transformation(self, data):
@@ -232,5 +212,58 @@ class DeepPPCA(nn.Module):
         anim.save(savefile, writer=pillowwriter)
 
         plt.show()"""
+        # def log_likelihood(self, data):
+    #     H = self(data)
+    #     covariance_matrix = H @ H.transpose(1, 2) + self.sigma**2 * torch.eye(data.size(1))
+    #     print(covariance_matrix)
+    #     #epsilon = 1e-4
+    #     #covariance_matrix = covariance_matrix + epsilon * torch.eye(covariance_matrix.size(-1))
+    #     mvn = torch.distributions.MultivariateNormal(torch.zeros(data.size(1)), covariance_matrix)
+    #     log_prob = mvn.log_prob(data)
+    #     #print("shape of log [prob]",log_prob.shape())
+    #     det_cov = torch.det(covariance_matrix)
+    #     return log_prob, det_cov
+
+    # def log_likelihood(self, data, target):
+    #     H = self(data)
+    #     n_columns = data.shape[1]
+    #     n_rows = data.shape[0]
+    #     cov_diag = (self.sigma**2 * torch.ones(n_columns)).reshape((1, n_columns))
+    #     cov_diag = cov_diag.repeat(n_rows, 1)
+
+    #     try:
+    #         mvn = torch.distributions.LowRankMultivariateNormal(torch.zeros_like(data), cov_factor=H, cov_diag=cov_diag)
+    #         log_prob = mvn.log_prob(data)
+    #     except Exception as e:
+    #         print(e)
+    #         np.save(f'analysis/Covarience_matrix/cov_mtrx_not_pos_def_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}_sigma_{self.sigma}.npy', H.detach().cpu().numpy())
+    #         return None
+
+    #     return log_prob
+
+    # def log_likelihood(self, data, target):
+    #     H = self(data)
+    #     n_columns = data.shape[1]
+    #     n_rows = data.shape[0]
+    #     cov_diag = (self.sigma**2 * torch.ones(n_columns)).reshape((1, n_columns))
+    #     cov_diag = cov_diag.repeat(n_rows, 1)
+
+    #     try:
+    #         mvn = torch.distributions.LowRankMultivariateNormal(torch.zeros_like(data), cov_factor=H, cov_diag=cov_diag)#mvn shape: torch.Size([7])
+    #         #print("mvn shape:", mvn.event_shape)
+    #         log_prob = mvn.log_prob(data)#Shape of log_prob: torch.Size([4])
+    #         #print("Shape of log_prob:", log_prob.shape)
+    #         #det_cov = None #torch.det(covariance_matrix)
+    #     except  Exception as e:     #torch.linalg.LinAlgError:
+    #         print(e)
+    #         #print("Covariance matrix is not positive definite.")
+    #         #print(covariance_matrix)
+    #         np.save(f'analysis/Covarience_matrix/cov_mtrx_not_pos_def_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}_sigma_{self.sigma}.npy', H.detach().cpu().numpy())
+    #         #np.save('analysis/covariance_matrix_not_positive_definite.npy', covariance_matrix.detach().cpu().numpy())
+    #         # Returning default values to prevent runtime error
+    #         return None #torch.tensor(0.0), torch.tensor(0.0)
+
+    #     return log_prob
+
 
 

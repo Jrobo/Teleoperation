@@ -26,16 +26,44 @@ def exponential_moving_average(data, alpha):
 # Evaluation
 def evaluate_model(model, dataloader):
     model.eval()  # evaluation mode
-    total_nll = 0
-    total_samples = 0 
+    total_nll = 1
+    total_samples = 1 
     with torch.no_grad():
         for inputs, outputs in dataloader:
-            log_prob, det_cov = model.log_likelihood(inputs,outputs)
-            nll = -log_prob.mean() #+ 0.5 * torch.log(det_cov).mean()
-            total_nll += nll.item() * inputs.size(0)  # Sum up 
-            total_samples += inputs.size(0)  
+            status,log_prob= model.log_likelihood(inputs,outputs)
+            #print(status)
+            if not status:
+                nll = -log_prob.mean() #+ 0.5 * torch.log(det_cov).mean()
+                total_nll += nll.item() * inputs.size(0)  # Sum up 
+                total_samples += inputs.size(0) 
+            else:
+                #Handle the case where log_prob is None
+                print("else block") 
+
     return total_nll / total_samples  #Avg lg-likhood per sample
 
+# # Training
+# def train_model(model, train_loader, val_loader, optimizer, num_epochs):
+#     train_losses = []
+#     val_losses = []
+#     for epoch in range(num_epochs):
+#         total_loss = 0.0  # Initialize total_loss 
+#         # Training
+#         model.train()  # training mode
+#         for inputs, outputs in train_loader:
+#             optimizer.zero_grad()
+#             log_prob = model.log_likelihood(inputs, outputs)
+#             if log_prob is not None:
+#                     nll = -log_prob.mean() # + 0.5 * torch.log(det_cov).mean()
+#                     nll.backward()
+#                     optimizer.step()
+#                     total_loss += nll.item()  # loss for each batch
+#             else:
+#                     # Handle the case where log_prob is None
+#                     print("Skipping batch due to None log_prob returned from log_likelihood method.")
+ 
+#         average_loss = total_loss / len(train_loader)  # average loss for the epoch
+#         train_losses.append(average_loss)
 # Training
 def train_model(model, train_loader, val_loader, optimizer, num_epochs):
     train_losses = []
@@ -46,11 +74,15 @@ def train_model(model, train_loader, val_loader, optimizer, num_epochs):
         model.train()  # training mode
         for inputs, outputs in train_loader:
             optimizer.zero_grad()
-            log_prob, det_cov = model.log_likelihood(inputs,outputs)
-            nll = -log_prob.mean() # + 0.5 * torch.log(det_cov).mean()
-            nll.backward()
-            optimizer.step()
-            total_loss += nll.item()  # loss for each batch
+            status,log_prob = model.log_likelihood(inputs, outputs)            
+            if not status:
+                nll = -log_prob.mean()
+                nll.backward()
+                optimizer.step()
+                total_loss += nll.item()  # loss for each batch
+            else:
+                #Handle the case where log_prob is None
+                print("Skipping batch due to None log_prob returned from log_likelihood method.")
 
         average_loss = total_loss / len(train_loader)  # average loss for the epoch
         train_losses.append(average_loss)
@@ -67,6 +99,8 @@ def train_model(model, train_loader, val_loader, optimizer, num_epochs):
     print(f'Finished: Total Epoch {epoch+1}, Final Log-Likelihood: {average_loss}')
 
     return train_losses, val_losses  # Return the lists of losses
+  
+
 
 def main(sigma, lr, num_epochs, seed, ema_alpha):
     # Set random seed
@@ -202,9 +236,9 @@ def main(sigma, lr, num_epochs, seed, ema_alpha):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Train a DeepPPCA model')
-    parser.add_argument('--sigma', type=float, default=0.1, help='Value of sigma.')
+    parser.add_argument('--sigma', type=float, default=0.000000000001, help='Value of sigma.')
     parser.add_argument('--lr', type=float, default=0.0001, help='Learning rate.')
-    parser.add_argument('--num_epochs', type=int, default=100, help='Number of epochs for training.')
+    parser.add_argument('--num_epochs', type=int, default=30000, help='Number of epochs for training.')
     parser.add_argument('--seed', type=int, default=123, help='Random seed for reproducibility.')
     parser.add_argument('--ema_alpha', type=float, default=0.01, help='Alpha value for Exponential Moving Average.')
 
