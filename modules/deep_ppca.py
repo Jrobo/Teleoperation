@@ -40,31 +40,27 @@ class DeepPPCA(nn.Module):
         cov_diag = cov_diag.repeat(n_rows, 1)
         status=False
         try:
+
             mvn = torch.distributions.LowRankMultivariateNormal(torch.zeros_like(data), cov_factor=H, cov_diag=cov_diag)
             log_prob = mvn.log_prob(data)
             return status,log_prob
         except Exception as e:
+
+            mvn = torch.distributions.LowRankMultivariateNormal(torch.zeros_like(data), cov_factor=H, cov_diag=cov_diag)#mvn shape: torch.Size([7])
+
+            #print("mvn shape:", mvn.event_shape)#mvn shape: torch.Size([7])
+            #print("mvn shape:", mvn.event_shape)
+            log_prob = mvn.log_prob(target)#Shape of log_prob: torch.Size([4])# input is velocity
+            #print("Shape of log_prob:", log_prob.shape)
+            #det_cov = None #torch.det(covariance_matrix)
+        except  Exception as e:     #torch.linalg.LinAlgError:
+
             print(e)
             status=True
             np.save(f'analysis/Covarience_matrix/cov_mtrx_not_pos_def_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}_sigma_{self.sigma}.npy', H.detach().cpu().numpy())
-            return status,log_prob
-
-        # if log_prob is None:
-        #     print("Encountered None in log probability.")
-        #     return None
-
-        # if torch.isnan(log_prob).any():
-        #     print("Encountered NaN in log probability.")
-        #     return None
-
-        # if torch.isinf(log_prob).any():
-        #     print("Encountered inf in log probability.")
-        #     return None
-
-        
-
-
             
+            return status,log_prob
+   
     def get_transformation(self, data):
             """
             Data is a 7-dimensional column vector
