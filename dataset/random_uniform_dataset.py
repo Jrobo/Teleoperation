@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+#npot using anymore
+
 # Load the NPZ file
 data = np.load('joint_data_with_identifiers.npz')
 

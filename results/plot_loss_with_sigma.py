@@ -78,6 +78,7 @@ plt.plot(val_loss_data['Sigma Value'], val_loss_data['Average Value'], 'b+', lab
 
 plt.xlabel('Sigma Value')
 plt.xscale('log')
+plt.yscale('symlog')
 plt.ylabel('Loss Value')
 plt.title('Loss Value vs Sigma Value')
 plt.legend()
